@@ -81,7 +81,8 @@ class vector
                 /**
                 * @brief   Goes to the next item in the vector
                 * @pre     N/A
-                * @post    modifies the iterator to postd::size_t at the next position
+                * @post    modifies the iterator to postd::size_t at the next
+                *          position
                 *
                 * @return   reference to the iterator.
                 */
@@ -91,7 +92,8 @@ class vector
                 * @brief    Checks if the iterator is not equal to another
                 *           iterator
                 * @pre      N/A
-                * @post     returns if they are postd::size_ting to the same position
+                * @post     returns if they are postd::size_ting to the same
+                *           position
                 *
                 * @param    it - the other iterator used in the comparison
                 *
@@ -136,7 +138,8 @@ class vector
                 /**
                 * @brief    Goes to the next item in the vector
                 * @pre      N/A
-                * @post     modifies the iterator to postd::size_t at the next position
+                * @post     modifies the iterator to postd::size_t at the next
+                *           position
                 *
                 * @return   const reference to the iterator
                 */
@@ -146,7 +149,8 @@ class vector
                 * @brief    Checks if the const iterator is not equal to another
                 *           const iterator
                 * @pre      N/A
-                * @post     returns if they are postd::size_ting to the same position
+                * @post     returns if they are postd::size_ting to the same
+                *           position
                 *
                 * @param    it - the other iterator used in the comparison
                 *
@@ -157,13 +161,13 @@ class vector
 
         /********************* other functions *********************/
         /**
-        * @brief    prstd::size_ts out and throws a length error
+        * @brief    prints out and throws a length error
         * @pre      N/A
         * @post     ends the program
         *
         * @exception    throws a length error.
         *
-        * @param    msg - the message prstd::size_ted to explain the error
+        * @param    msg - the message printed to explain the error
         */
         void lenError(const std::string& msg) const;
 
@@ -430,7 +434,8 @@ class vector
         * @post     returns a new vector where each value is multiplied by the
         *           scalar
         *
-        * @param    li - the scalar that will be multiplied std::size_to the vector
+        * @param    li - the scalar that will be multiplied std::size_to the
+        *           vector
         * @param    ri - the vector to be multiplied
         *
         * @return   a new vector of the same type
@@ -446,7 +451,8 @@ class vector
         *           scalar
         *
         * @param    li - the vector to be multiplied
-        * @param    ri - the scalar that will be multiplied std::size_to the vector
+        * @param    ri - the scalar that will be multiplied std::size_to the
+        *           vector
         *
         * @return   a new vector of the same type
         */
@@ -459,7 +465,8 @@ class vector
         *           which preforms the Tv *= T operation returning T
         * @post     modifies the vector by the multiplication
         *
-        * @param    i - the scalar that will be multiplied std::size_to the vector
+        * @param    i - the scalar that will be multiplied std::size_to the
+        *           vector
         *
         * @return   a reference to the vector
         */
@@ -519,20 +526,22 @@ class vector
 
         /********************* constiterator begin/end *********************/
         /**
-        * @brief    used to create a iterator that postd::size_ts to the beginning of
-        *           the vector
+        * @brief    used to create a iterator that postd::size_ts to the
+        *           beginning of the vector
         * @pre      N/A
-        * @post     creates a iterator that postd::size_ts to the start of the list
+        * @post     creates a iterator that postd::size_ts to the start of the
+        *           list
         *
         * @return   an iterator that postd::size_ts to the beginning of the list
         */
         Iterator begin() noexcept;
 
         /**
-        * @brief    used to create a iterator that postd::size_ts to the end of the
-        *           vector
+        * @brief    used to create a iterator that postd::size_ts to the end of
+        *           the vector
         * @pre      N/A
-        * @post     creates a iterator that postd::size_ts to the end of the list
+        * @post     creates a iterator that postd::size_ts to the end of the
+        *           list
         *
         * @return   an iterator that postd::size_ts to the end of the list
         */
@@ -540,21 +549,23 @@ class vector
 
         /********************* constiterator begin/end *********************/
         /**
-        * @brief    used to create a const iterator that postd::size_ts to the beginning
-        *           of the vector
+        * @brief    used to create a const iterator that postd::size_ts to the
+        *           beginning of the vector
         * @pre      N/A
-        * @post     creates a const iterator that postd::size_ts to the start of the
-        *           list
+        * @post     creates a const iterator that postd::size_ts to the start of
+        *           the list
         *
-        * @return   a const iterator that postd::size_ts to the beginning of the list
+        * @return   a const iterator that postd::size_ts to the beginning of the
+        *           list
         */
         ConstIterator begin() const noexcept;
 
         /**
-        * @brief    used to create a const iterator that postd::size_ts to the end of
-        *           the vector
+        * @brief    used to create a const iterator that postd::size_ts to the
+        *           end of the vector
         * @pre      N/A
-        * @post     creates a const iterator that postd::size_ts to the end of the list
+        * @post     creates a const iterator that postd::size_ts to the end of
+        *           the list
         *
         * @return   a const iterator that postd::size_ts to the end of the list
         */

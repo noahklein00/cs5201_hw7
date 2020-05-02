@@ -6,98 +6,15 @@
 // Filename   : nTrix.hpp
 
 //***************************** Essentials **********************************//
-
-template <typename T>
-nTrix<T>::nTrix()
-{
-	//default 2x2 matrix
-	m_row = 2;
-	m_col = 2;
-	m_matrix = new T[m_row*m_col];
-}
-
-template <typename T>
-nTrix<T>::nTrix(const std::initializer_list<std::initializer_list<T>>& grid)
-{
-	unsigned int temp_size = grid.begin() -> size();
-	for(auto r_itr = grid.begin(); r_itr != grid.end(); r_itr++)
-	{
-		if((*r_itr).size() != temp_size)
-		{
-			throw(std::domain_error(std::to_string(r_itr -> size())));
-		}
-	}
-
-	m_row = grid.size();
-	m_col = grid.begin() -> size();
-	m_matrix = new T[m_row*m_col];
-
-	short row_counter = 0;
-	short col_counter = 0;
-
-	for(auto r_itr = grid.begin(); r_itr != grid.end(); r_itr++)
-	{
-		for(auto c_itr = r_itr -> begin(); c_itr != r_itr -> end(); c_itr++)
-		{
-			m_matrix[(row_counter * m_col) + col_counter] = *c_itr;
-			col_counter++;
-		}
-		col_counter = 0;
-		row_counter++;
-	}
-}
-
-template <typename T>
-nTrix<T>::nTrix(const short num_rows, const short num_cols)
-{
-	if(num_rows < 0)
-	{
-		throw(std::domain_error(std::to_string(num_rows)));
-	}
-	if(num_cols < 0)
-	{
-		throw(std::domain_error(std::to_string(num_cols)));
-	}
-
-	m_row = num_rows;
-	m_col = num_cols;
-	m_matrix = new T[m_row*m_col];
-}
-
-template <typename T>
-nTrix<T>::nTrix(const vector<T>& rhs)
-{
-	m_row = rhs.size();
-	m_col = 1;
-	m_matrix = new T[m_row];
-
-	for(int i = 0; i < m_row; i++)
-	{
-		m_matrix[i] = rhs[i];
-	}
-}
-
-template <typename T>
-nTrix<T>::nTrix(const nTrix<T>& rhs)
-{
-	m_row = rhs.m_row;
-	m_col = rhs.m_col;
-	m_matrix = new T[m_row*m_col];
-
-	for(int i = 0; i < m_row; i++)
-	{
-		for(int j = 0; j < m_col; j++)
-		{
-			m_matrix[(i * m_col) + j] = rhs.m_matrix[(i * rhs.m_col) + j];
-		}
-	}
-}
-
 template <typename T>
 nTrix<T>& nTrix<T>::operator=(const nTrix<T>& rhs)
 {
+    if (this == &rhs)
+    {
+        return *this;
+    }
+
 	delete[] m_matrix;
-	m_matrix = NULL;
 
 	m_row = rhs.m_row;
 	m_col = rhs.m_col;
@@ -429,38 +346,37 @@ std::istream& operator>>(std::istream& in, nTrix<T>& rhs)
 
 	while (line.size() > 1)
 	{
-			data = data + " " + line;
+		data = data + " " + line;
 
-			std::size_t curCols = 1;
-			for (char character : line)
+		std::size_t curCols = 1;
+		for (char character : line)
+		{
+			if (character == ' ')
 			{
-					if (character == ' ')
-					{
-							curCols++;
-					}
+				curCols++;
 			}
-			if (curCols != cols)
-			{
-					const std::string err = "input matrix must be a constant size. "
-																	"input line: " + std::to_string(cols) +
-																	", latest number of columns: " +
-																	std::to_string(curCols);
-					throw(std::length_error(err));
-			}
+		}
+		if (curCols != cols)
+		{
+			const std::string err = "input matrix must be a constant size. "
+									"input line: " + std::to_string(cols) +
+									", latest number of columns: " +
+									std::to_string(curCols);
+			throw(std::length_error(err));
+		}
 
-			rows++;
-			getline(in, line);
+		rows++;
+		getline(in, line);
 	}
-	std::cout << "rows: " << rows << " cols: " << cols << std::endl;
 	nTrix<T> result(rows, cols);
 
 	std::stringstream input(data);
 	for (std::size_t row = 0; row < rows; row++)
 	{
-			for (std::size_t col = 0; col < rows; col++)
-			{
-					input >> result.m_matrix[(row * result.m_col) + col];
-			}
+		for (std::size_t col = 0; col < cols; col++)
+		{
+			input >> result.m_matrix[(row * result.m_col) + col];
+		}
 	}
 
 	rhs = result;

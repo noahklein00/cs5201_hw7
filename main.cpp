@@ -12,6 +12,10 @@
 
 #include <numeric>
 #include "nTrix.h"
+#include "overrelax.h"
+
+/** cost to move from one pixel to the next */
+const float STEPSIZE = 1;
 
 /**
  * @brief       driver to run the models for landing a spaceship on the moon
@@ -41,8 +45,28 @@ int main(int argc, char *argv[])
     }
     else
     {
-        
+        std::filebuf inputFile;
+        inputFile.open(argv[1], std::iostream::in);
+        std::istream inputData(&inputFile);
+
+        nTrix<char> inputMat(0, 0);
+
+        inputData >> inputMat;
+
+        overrelax relax(inputMat, STEPSIZE);
+
+        while (!relax.resolved())
+        {
+            relax();
+        }
+
+        std::ofstream outputFile (argv[2], std::ofstream::out);
+
+        outputFile << relax << std::endl;
+
+        outputFile.close();
     }
+
     
     return 0;
 }

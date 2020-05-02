@@ -12,6 +12,7 @@
 #include "vector.h"
 #include <iterator>
 #include <cmath>
+#include <fstream>
 
 //! nTrix class.
 /*!
@@ -35,7 +36,11 @@ class nTrix
 		 * Description: Creates a default 2x2 matrix.
 		 * \post A 2x2 matrix is initialized with no values stored.
 		 */
-		nTrix();
+		nTrix()
+			: m_row(2)
+			, m_col(2)
+			, m_matrix(new T[m_row*m_col])
+		{};
 
 		/*! \brief Constructor
 		 *
@@ -49,7 +54,35 @@ class nTrix
 		 * \throw Throws a std::domain_error object if one of the lists is
 		 * not the same length as the others.
 		 */
-		nTrix(const std::initializer_list<std::initializer_list<T>>& grid);
+		nTrix(const std::initializer_list<std::initializer_list<T>>& grid)
+			: m_row(grid.size())
+			, m_col(grid.begin() -> size())
+			, m_matrix(new T[m_row*m_col])
+		{
+			unsigned int temp_size = grid.begin() -> size();
+			for(auto r_itr = grid.begin(); r_itr != grid.end(); r_itr++)
+			{
+				if((*r_itr).size() != temp_size)
+				{
+					throw(std::domain_error(std::to_string(r_itr -> size())));
+				}
+			}
+
+			short row_counter = 0;
+			short col_counter = 0;
+
+			for(auto r_itr = grid.begin(); r_itr != grid.end(); r_itr++)
+			{
+				for(auto c_itr = r_itr -> begin(); c_itr != r_itr -> end();
+																		c_itr++)
+				{
+					m_matrix[(row_counter * m_col) + col_counter] = *c_itr;
+					col_counter++;
+				}
+				col_counter = 0;
+				row_counter++;
+			}
+		};
 
 		/*! \brief Constructor
 		 *
@@ -61,17 +94,40 @@ class nTrix
 		 * \throw Throws a std::domain_error object if either of the
 		 * dimensions are negative.
 		 */
-		nTrix(const short num_rows, const short num_cols);
+		nTrix(const short num_rows, const short num_cols)
+			: m_row(num_rows)
+			, m_col(num_cols)
+			, m_matrix(new T[m_row*m_col])
+		{
+			if(num_rows < 0)
+			{
+				throw(std::domain_error(std::to_string(num_rows)));
+			}
+			if(num_cols < 0)
+			{
+				throw(std::domain_error(std::to_string(num_cols)));
+			}
+		};
 
 		/*! \brief Vector Constructor
 		 *
-		 * Description: Allows a matrix to be constructed based on a vector vector.
-		 * The matrix is a column matrix.
+		 * Description: Allows a matrix to be constructed based on a vector
+		 * vector. The matrix is a column matrix.
 		 * \param rhs is the vector to be copied.
 		 * \pre = operator needs to be defined for type T.
-		 * \post A column matrix is constructed with the same values in the vector.
+		 * \post A column matrix is constructed with the same values in the
+		 * vector.
 		 */
-		nTrix(const vector<T>& rhs);
+		nTrix(const vector<T>& rhs)
+			: m_row(rhs.size())
+			, m_col(1)
+			, m_matrix(new T[m_row])
+		{
+			for(int i = 0; i < m_row; i++)
+			{
+				m_matrix[i] = rhs[i];
+			}
+		};
 
 		/*! \brief Copy Constructor
 		 *
@@ -79,14 +135,27 @@ class nTrix
 		 * same values as the matrix passed.
 		 * \param rhs is the matrix to be copied.
 		 * \pre = operator needs to be defined for type T.
-		 * \post A new matrix is initialized with the same values as the one passed.
+		 * \post A new matrix is initialized with the same values as the one
+		 * passed.
 		 */
-		nTrix(const nTrix<T>& rhs);
+		nTrix(const nTrix<T>& rhs)
+			: m_row(rhs.m_row)
+			, m_col(rhs.m_col)
+			, m_matrix(new T[m_row*m_col])
+		{
+			for(int i = 0; i < m_row; i++)
+			{
+				for(int j = 0; j < m_col; j++)
+				{
+					m_matrix[(i*m_col) + j] = rhs.m_matrix[(i*rhs.m_col) + j];
+				}
+			}
+		};
 
 		/*! \brief = operator
 		 *
-		 * Description: = operator for the nTrix class that sets the calling object
-		 * equal to the object passed.
+		 * Description: = operator for the nTrix class that sets the calling
+		 * object equal to the object passed.
 		 * \param rhs is the matrix to be copied.
 		 * \return Returns *this with the copied values.
 		 * \pre = operator needs to be defined for type T.
@@ -122,8 +191,8 @@ class nTrix
 		 * Description: Allows the user to view the i,j-th element in the matrix.
 		 * \param row_index is the row to view.
 		 * \param col_index is the column member of the row to view.
-		 * \return Returns a const reference to the T object at that index in the
-		 * matrix.
+		 * \return Returns a const reference to the T object at that index in
+		 * the matrix.
 		 * \throw Throws a std::domain_error object if either of the indexes are
 		 * less than zero or greater than their respective domains that they are
 		 * attempting to access.
