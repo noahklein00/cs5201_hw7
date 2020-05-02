@@ -1,14 +1,24 @@
+/**
+ * @file    overrelax.cpp
+ * @author  Jeffrey Strahm
+ * @brief   class: CS5201 - Prof. Price
+ * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
+ * @brief   Due: 5/10/20
+ * @date    5/2/20
+*/
+
 #include "overrelax.h"
 
 const float RELAXERROR = 0.000001;
 
+/********************* other functions *********************/
 void overrelax::lenError(const std::string& msg) const
 {
     std::cout << msg << std::endl;
     throw std::length_error(msg);
 }
 
-
+/********************* status functions *********************/
 bool overrelax::resolved() const noexcept
 {
     return m_resolved;
@@ -31,8 +41,6 @@ bool overrelax::verify() noexcept
                     m_data(row, col) < val - RELAXERROR)
                 {
                     m_resolved = false;
-                    std::cout << "\ndata: " << m_data(row, col) * 100 << std::endl;
-                    std::cout << "\nval: " << val * 100 << std::endl << std::endl;
                 }
             }
         }
@@ -41,6 +49,7 @@ bool overrelax::verify() noexcept
     return m_resolved;
 }
 
+/********************* operator functions *********************/
 overrelax& overrelax::operator=(const overrelax& source) noexcept
 {
     if (this == &source)

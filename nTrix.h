@@ -3,7 +3,7 @@
  * Definitions for the nTrix class. \n
  * Programmer: Noah Klein \n
  * Class: CS5201 \n
- * Assignment: Homework 6 \n
+ * Assignment: Homework 7 \n
  */
 
 #ifndef NTRIX_H

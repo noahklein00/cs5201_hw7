@@ -1,12 +1,13 @@
 /**
- * @file    
+ * @file    overrelax.h
  * @author  Jeffrey Strahm
  * @brief   class: CS5201 - Prof. Price
- * @brief   
- * @brief   Due: 
- * @date    
+ * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
+ * @brief   Due: 5/10/20
+ * @date    5/2/20
  *
- * @brief   
+ * @brief   This is a solution definition to the possion equation. This is an
+ *          implimentaiton of the over-relax algorithm.
 */
 
 #include "nTrix.h"
@@ -36,10 +37,19 @@ class overrelax
         */
         void lenError(const std::string& msg) const;
     public:
+        /********************* constructors *********************/
         /**
-        * @brief    
-        * @pre      
-        * @post     
+        * @brief    creates an instance of the overrelax algorithm. If non 'B'
+        *           and 'W' chars are entered, they will be treated as 'B'.
+        * @pre      step size ust be greater than 0, and the matrix must be at
+        *           least a 1x1. data must contain 'B' and 'W' chars only.
+        * @post     creates an instance of the overrelax algorithm
+        * 
+        * @param    data - the char matrix of the image to be examined.
+        * @param    step - the minimum cost to move from one pixel to another.
+        * 
+        * @exception    throws a length error if the step size is less than zero
+        *               or the matrix is less than 1x1
         */
         overrelax(nTrix<char> data, float step)
             : m_data(data.rows() + 2, data.cols() + 2)
@@ -88,9 +98,12 @@ class overrelax
         };
 
         /**
-        * @brief    
-        * @pre      
-        * @post     
+        * @brief    copies an instance of overrelax
+        * @pre      N/A
+        * @post     makes a new instance of overrelax the same as the passed
+        *           instance.
+        * 
+        * @param    source - the overrelax instance to be copied
         */
         overrelax(const overrelax& source) noexcept
             : m_data(source.m_data)
@@ -98,38 +111,61 @@ class overrelax
             , m_resolved(source.m_resolved)
         {};
 
+        /********************* status functions *********************/
         /**
-        * @brief    
-        * @pre      
-        * @post     
+        * @brief    returns whither or not the solution has been found to
+        *           sufficient accuracy.
+        * @pre      N/A
+        * @post     returns if the problem is solved with sufficient accuracy.
+        * 
+        * @return   if the problem is solved with sufficient accuracy.
         */
         bool resolved() const noexcept;
 
         /**
-        * @brief    
-        * @pre      
-        * @post     
+        * @brief    Checks to see if the solution is solved. Used to double
+        *           check the values
+        * @pre      N/A
+        * @post     returns if the state has been verified to have been solved
+        *           with sufficient accuracy
+        * 
+        * @return   if the state has been verified to have been solved with
+        *           sufficient accuracy
         */
         bool verify() noexcept;
 
+        /********************* operator functions *********************/
         /**
-        * @brief    
-        * @pre      
-        * @post     
+        * @brief    copy by assignment operator
+        * @pre      N/A
+        * @post     makes the current instance of overrelax the same as the
+        *           passed instance.
+        * 
+        * @param    source - the overrelax instance to be copied
+        * 
+        * @return   a reference to the current instance of overrelax
         */
         overrelax& operator=(const overrelax& source) noexcept;
 
         /**
-        * @brief    
-        * @pre      
-        * @post     
+        * @brief    Does corrective calculations on the value of all U values
+        * @pre      N/A
+        * @post     corrects the data a bit and marks it as resolved if the
+        *           changes fall within acceptable error
+        * 
+        * @return a reference to the current instance of overrelax
         */
         overrelax& operator()() noexcept;
 
         /**
-        * @brief    
-        * @pre      
-        * @post     
+        * @brief    used to print out the data of the list to a ostream
+        * @pre      Type T must support the << operator
+        * @post     print out the data in a comma deliminated fashion
+        *
+        * @param    out - the ostream that takes in the output
+        * @param    i - the overrelax instance the data will be print from
+        *
+        * @return   a reference to the ostream
         */
         friend std::ostream& operator << (std::ostream& out,
                                           const overrelax& i) noexcept;

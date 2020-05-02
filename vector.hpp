@@ -1,10 +1,10 @@
-/*
+/**
  * @file    vector.hpp
  * @author  Jeffrey Strahm
  * @brief   class: CS5201 - Prof. Price
- * @brief   Homework 4 - Implicit Solvers, p-norms, and Insulin/Glucose Dynamics
- * @brief   Due: 3/13/2020
- * @date    3/13/2020
+ * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
+ * @brief   Due: 5/10/2020
+ * @date    5/2/2020
  * 
 */
 

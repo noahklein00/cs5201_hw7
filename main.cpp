@@ -2,7 +2,7 @@
  * @file    main.cpp
  * @author  Jeffrey Strahm
  * @brief   class: CS5201 - Prof. Price
- * @brief   Homework 6 - Complex Numbers, Outer Products, and Quantum Computing
+ * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 4/20/2020
  * @date    4/20/2020
  * 
