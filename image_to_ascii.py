@@ -36,7 +36,7 @@ def image_to_array(image_path: str,
         im_arr = np.fromstring(image.tobytes(), dtype=np.uint8)
         im_arr = im_arr.reshape((image.size[1], image.size[0], 3))
     im_arr = np.apply_along_axis(rgb_to_bw, 2, im_arr)
-    np.savetxt(text_path, im_arr, delimiter='', fmt='%c')
+    np.savetxt(text_path, im_arr, delimiter=' ', fmt='%c')
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
