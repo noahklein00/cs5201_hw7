@@ -11,6 +11,7 @@
 */
 
 #include "nTrix.h"
+#include "poisson_solver.h"
 
 #ifndef OVERRELRX_H
 #define OVERRELAX_H
@@ -19,12 +20,11 @@
  * @class   
  * @brief   
  */
-class overrelax
+class overrelax : public poisson_solver
 {
     private:
         nTrix<float> m_data;
         float m_step;
-        bool m_resolved;
         /********************* other functions *********************/
         /**
         * @brief    prints out and throws a length error
@@ -36,6 +36,13 @@ class overrelax
         * @param    msg - the message printed to explain the error
         */
         void lenError(const std::string& msg) const;
+
+        /**
+        * @brief    solves the poisoon equation to within the set error
+        * @pre      N/A
+        * @post     edits the data to match the solution
+        */
+        void solve() noexcept;
     public:
         /********************* constructors *********************/
         /**
@@ -54,7 +61,6 @@ class overrelax
         overrelax(nTrix<char> data, float step)
             : m_data(data.rows() + 2, data.cols() + 2)
             , m_step(step)
-            , m_resolved(false)
         {
             if (step < 0)
             {
@@ -95,6 +101,8 @@ class overrelax
                     }
                 }
             }
+
+            solve();
         };
 
         /**
@@ -108,19 +116,28 @@ class overrelax
         overrelax(const overrelax& source) noexcept
             : m_data(source.m_data)
             , m_step(source.m_step)
-            , m_resolved(source.m_resolved)
         {};
 
-        /********************* status functions *********************/
+        /********************* output functions *********************/
         /**
-        * @brief    returns whither or not the solution has been found to
-        *           sufficient accuracy.
+        * @brief    Used to print out the matrix in a comma deliminated fashion
         * @pre      N/A
-        * @post     returns if the problem is solved with sufficient accuracy.
-        * 
-        * @return   if the problem is solved with sufficient accuracy.
+        * @post     modifies the passed parameter to print out the comma
+        *           deliminated matrix
+        *
+        * @param    out - the ostream that takes in the output
         */
-        bool resolved() const noexcept;
+        void print(std::ostream& out) const noexcept;
+
+        /**
+        * @brief    Used to get the solution to the poisson equation.
+        * @pre      the solution must be found, otherwise will print out a empty
+        *           matrix
+        * @post     returns the current solution matrix
+        *
+        * @return   the current solution matrix
+        */
+        const nTrix<float>& getMat() const noexcept;
 
         /**
         * @brief    Checks to see if the solution is solved. Used to double
@@ -146,16 +163,6 @@ class overrelax
         * @return   a reference to the current instance of overrelax
         */
         overrelax& operator=(const overrelax& source) noexcept;
-
-        /**
-        * @brief    Does corrective calculations on the value of all U values
-        * @pre      N/A
-        * @post     corrects the data a bit and marks it as resolved if the
-        *           changes fall within acceptable error
-        * 
-        * @return a reference to the current instance of overrelax
-        */
-        overrelax& operator()() noexcept;
 
         /**
         * @brief    used to print out the data of the list to a ostream

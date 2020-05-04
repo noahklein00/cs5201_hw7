@@ -18,15 +18,71 @@ void overrelax::lenError(const std::string& msg) const
     throw std::length_error(msg);
 }
 
-/********************* status functions *********************/
-bool overrelax::resolved() const noexcept
+void overrelax::solve() noexcept
 {
-    return m_resolved;
+    bool resolved = false;
+
+    while (!resolved)
+    {
+        resolved = true;
+
+        short skip = 0;
+
+        for (short row = 1; row < m_data.rows() - 1; row++)
+        {
+            for (short col = 1 + skip; col < m_data.cols() - 1; col++)
+            {
+                if (m_data(row, col) != 0)
+                {
+                    const float val = (m_data(row - 1, col) + m_data(row + 1, col) +
+                                    m_data(row, col - 1) + m_data(row, col + 1))/4 +
+                                    m_step;
+                    if (m_data(row, col) > val + RELAXERROR ||
+                        m_data(row, col) < val - RELAXERROR)
+                    {
+                        resolved = false;
+                    }
+                    m_data(row, col) = val;
+                }
+            }
+
+            skip = skip == 0 ? 1 : 0;
+        }
+        
+        skip = 1;
+
+        for (short row = 1; row < m_data.rows() - 1; row++)
+        {
+            for (short col = 1; col < m_data.cols() - 1; col++)
+            {
+                if (m_data(row, col) != 0)
+                {
+                    const float val = (m_data(row - 1, col) + m_data(row + 1, col) +
+                                    m_data(row, col - 1) + m_data(row, col + 1))/4 +
+                                    m_step;
+                    m_data(row, col) = val;
+                }
+            }
+
+            skip = skip == 0 ? 1 : 0;
+        }
+    }
+}
+
+/********************* output functions *********************/
+void overrelax::print(std::ostream& out) const noexcept
+{
+    out << (*this);
+}
+
+const nTrix<float>& overrelax::getMat() const noexcept
+{
+    return m_data;
 }
 
 bool overrelax::verify() noexcept
 {
-    m_resolved = true;
+    bool resolved = true;
 
     for (short row = 1; row < m_data.rows() - 1; row++)
     {
@@ -40,13 +96,13 @@ bool overrelax::verify() noexcept
                 if (m_data(row, col) > val + RELAXERROR ||
                     m_data(row, col) < val - RELAXERROR)
                 {
-                    m_resolved = false;
+                    resolved = false;
                 }
             }
         }
     }
 
-    return m_resolved;
+    return resolved;
 }
 
 /********************* operator functions *********************/
@@ -59,55 +115,7 @@ overrelax& overrelax::operator=(const overrelax& source) noexcept
 
     m_data = source.m_data;
     m_step = source.m_step;
-    m_resolved = source.m_resolved;
 
-    return *this;
-}
-
-overrelax& overrelax::operator()() noexcept
-{
-    m_resolved = true;
-
-    short skip = 0;
-
-    for (short row = 1; row < m_data.rows() - 1; row++)
-    {
-        for (short col = 1 + skip; col < m_data.cols() - 1; col++)
-        {
-            if (m_data(row, col) != 0)
-            {
-                const float val = (m_data(row - 1, col) + m_data(row + 1, col) +
-                                m_data(row, col - 1) + m_data(row, col + 1))/4 +
-                                m_step;
-                if (m_data(row, col) > val + RELAXERROR ||
-                    m_data(row, col) < val - RELAXERROR)
-                {
-                    m_resolved = false;
-                }
-                m_data(row, col) = val;
-            }
-        }
-
-        skip = skip == 0 ? 1 : 0;
-    }
-    
-    skip = 1;
-
-    for (short row = 1; row < m_data.rows() - 1; row++)
-    {
-        for (short col = 1; col < m_data.cols() - 1; col++)
-        {
-            if (m_data(row, col) != 0)
-            {
-                const float val = (m_data(row - 1, col) + m_data(row + 1, col) +
-                                m_data(row, col - 1) + m_data(row, col + 1))/4 +
-                                m_step;
-                m_data(row, col) = val;
-            }
-        }
-
-        skip = skip == 0 ? 1 : 0;
-    }
     return *this;
 }
 

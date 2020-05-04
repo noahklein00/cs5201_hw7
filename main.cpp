@@ -39,34 +39,28 @@ int main(int argc, char *argv[])
         throw(std::invalid_argument(std::to_string(func)));
     }
 
+    std::filebuf inputFile;
+    inputFile.open(argv[1], std::iostream::in);
+    std::istream inputData(&inputFile);
+
+    nTrix<char> inputMat(0, 0);
+
+    inputData >> inputMat;
+
+    std::ofstream outputFile (argv[2], std::ofstream::out);
+
     if (func == 0)
     {
 
     }
     else
     {
-        std::filebuf inputFile;
-        inputFile.open(argv[1], std::iostream::in);
-        std::istream inputData(&inputFile);
-
-        nTrix<char> inputMat(0, 0);
-
-        inputData >> inputMat;
-
         overrelax relax(inputMat, STEPSIZE);
 
-        while (!relax.resolved())
-        {
-            relax();
-        }
-
-        std::ofstream outputFile (argv[2], std::ofstream::out);
-
-        outputFile << relax << std::endl;
-
-        outputFile.close();
+        relax.print(outputFile);
     }
 
-    
+    outputFile.close();
+
     return 0;
 }
