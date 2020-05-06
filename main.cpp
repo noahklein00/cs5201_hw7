@@ -5,7 +5,7 @@
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 4/20/2020
  * @date    4/20/2020
- * 
+ *
  * @brief   This is the driver that runs the lander situation using a
  *          combination of filters.
 */
@@ -13,16 +13,17 @@
 #include <numeric>
 #include "nTrix.h"
 #include "overrelax.h"
+#include "cholesky.h"
 
 /** cost to move from one pixel to the next */
 const float STEPSIZE = 1;
 
 /**
  * @brief       driver to run the models for landing a spaceship on the moon
- * 
+ *
  * @exception   The exceptions ofo it's called functions. Currently domain and
  *              length
- * 
+ *
  * @returns     0
  */
 int main(int argc, char *argv[])
@@ -51,7 +52,8 @@ int main(int argc, char *argv[])
 
     if (func == 0)
     {
-
+      cholesky choly(inputMat, STEPSIZE);
+      choly.print(outputFile);
     }
     else
     {
