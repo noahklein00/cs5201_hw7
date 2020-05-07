@@ -6,7 +6,7 @@
 #include <cmath>
 #include <ctime>
 
-class cholesky: public poisson_solver
+class cholesky: public poisson_solver<cholesky>
 {
   public:
     virtual nTrix<float> operator()(const nTrix<char>& data, float step) const;

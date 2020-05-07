@@ -9,8 +9,6 @@
 
 #include "overrelax.h"
 
-const float RELAXERROR = 0.000001;
-
 /********************* other functions *********************/
 void overrelax::lenInvalArg(const std::string& msg) const
 {
@@ -32,8 +30,8 @@ bool overrelax::verify(const nTrix<float>& data, float step) noexcept
                 const float val = (data(row - 1, col) + data(row + 1, col) +
                                 data(row, col - 1) + data(row, col + 1))/4 +
                                 step;
-                if (data(row, col) > val + RELAXERROR ||
-                    data(row, col) < val - RELAXERROR)
+                if (data(row, col) > val + m_error ||
+                    data(row, col) < val - m_error)
                 {
                     resolved = false;
                 }
@@ -106,8 +104,8 @@ nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
                                       result(row + 1, col) +
                                       result(row, col - 1) +
                                       result(row, col + 1))/4 + step;
-                    if (result(row, col) > val + RELAXERROR ||
-                        result(row, col) < val - RELAXERROR)
+                    if (result(row, col) > val + m_error ||
+                        result(row, col) < val - m_error)
                     {
                         resolved = false;
                     }

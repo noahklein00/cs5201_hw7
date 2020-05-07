@@ -23,6 +23,7 @@
 class overrelax : public poisson_solver<overrelax>
 {
     private:
+        const float m_error;
         /********************* other functions *********************/
         /**
         * @brief    prints out and throws a invalid_argument error
@@ -35,7 +36,12 @@ class overrelax : public poisson_solver<overrelax>
         */
         void lenInvalArg(const std::string& msg) const;
     public:
-
+        overrelax()
+            : m_error(.000001)
+        {};
+        overrelax(float error)
+            : m_error(error)
+        {};
         /********************* output functions *********************/
         /**
         * @brief    Checks to see if the solution is solved. Used to double
