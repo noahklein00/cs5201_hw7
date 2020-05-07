@@ -1,10 +1,10 @@
 #include "cholesky.h"
 
-cholesky::cholesky(const nTrix<char>& input, const float m_step)
+nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
 {
   //x and b are converted to vectors
-  nTrix<float> A(input.rows() * input.cols(), input.rows() * input.cols());
-  m_solution = nTrix<float>(input.rows(), input.cols());
+  nTrix<float> A(data.rows() * data.cols(), data.rows() * data.cols());
+  nTrix<float> solution(data.rows(), data.cols());
   nTrix<float> L(A.rows(), A.cols());
   vector<float> x(A.rows());
   vector<float> y(A.rows());
@@ -17,15 +17,15 @@ cholesky::cholesky(const nTrix<char>& input, const float m_step)
   const int ROOTSIZE = sqrt(L.rows());
 
   //filling the x vector with values
-  for(i = input.rows()-1; i >= 0; --i)
+  for(i = data.rows()-1; i >= 0; --i)
   {
-    for(j = 0; j < input.cols(); ++j)
+    for(j = 0; j < data.cols(); ++j)
     {
-      if(input(i,j) == 'W')
+      if(data(i,j) == 'W')
       {
         x[k] = 0;
       }
-      else if(input(i,j) == 'B')
+      else if(data(i,j) == 'B')
       {
         x[k] = 1;
       }
@@ -40,7 +40,7 @@ cholesky::cholesky(const nTrix<char>& input, const float m_step)
   //filling the b vector with values
   for(i = 0; i < SIZE; ++i)
   {
-    b[i] = m_step;
+    b[i] = step;
   }
 
   //filling the A matrix with values
@@ -260,48 +260,45 @@ cholesky::cholesky(const nTrix<char>& input, const float m_step)
   j = 0;
   k = 0;
 
-  for(i = m_solution.rows()-1; i >= 0; --i)
+  for(i = solution.rows()-1; i >= 0; --i)
   {
-    for(j = 0; j < m_solution.cols(); ++j)
+    for(j = 0; j < solution.cols(); ++j)
     {
-      m_solution(i,j) = x[k];
+      solution(i,j) = x[k];
       ++k;
     }
   }
+
+  return solution;
 }
 
-const nTrix<float>& cholesky::getMat() const noexcept
-{
-  return m_solution;
-}
-
-void cholesky::print(std::ostream& out) const noexcept
-{
-  out << (*this);
-  return;
-}
-
-std::ostream& operator<<(std::ostream& out,const cholesky& i) noexcept
-{
-  int y = 0;
-  for(int x = 0; x < i.m_solution.rows(); ++x)
-	{
-		for(y = 0; y < i.m_solution.cols(); ++y)
-		{
-      if(y != 0)
-      {
-        out << "," << i.m_solution(x,y);
-      }
-      else
-      {
-        out << i.m_solution(x,y);
-      }
-		}
-    out << std::endl;
-	}
-
-  return out;
-}
+// void cholesky::print(std::ostream& out) const noexcept
+// {
+//   out << (*this);
+//   return;
+// }
+//
+// std::ostream& operator<<(std::ostream& out,const cholesky& i) noexcept
+// {
+//   int y = 0;
+//   for(int x = 0; x < i.solution.rows(); ++x)
+// 	{
+// 		for(y = 0; y < i.solution.cols(); ++y)
+// 		{
+//       if(y != 0)
+//       {
+//         out << "," << i.solution(x,y);
+//       }
+//       else
+//       {
+//         out << i.solution(x,y);
+//       }
+// 		}
+//     out << std::endl;
+// 	}
+//
+//   return out;
+// }
 
 // vector<float> cholesky::operator()(const nTrix<float>& A, vector<float>& x, const vector<float>& b)
 // {
