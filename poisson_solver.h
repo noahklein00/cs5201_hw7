@@ -22,14 +22,20 @@ class poisson_solver
 {
     public:
         /**
-        * @brief    Used to get the solution to the poisson equation.
-        * @pre      the solution must be found, otherwise will print out a empty
-        *           matrix
-        * @post     returns the current solution matrix
+        * @brief    Used to get the solution to the poisson equation
+        * @pre      based on implimentation.
+        * @post     returns the solution matrix
+        * 
+        * @exception    errors are based on implimentation.
+        * 
+        * @param    data - the input char matrix to be used as a base
+        * @param    step - the cost to move to an adjacent cell, must be greater
+        *                  than zero
         *
-        * @return   the current solution matrix
+        * @return   the solution matrix
         */
-        virtual const nTrix<float>& getMat() const noexcept = 0;
+        virtual nTrix<float> operator() (const nTrix<char>& data,
+                                                float step) const = 0;
 
         /**
         * @brief    Used to print out the matrix in a comma deliminated fashion
@@ -39,7 +45,7 @@ class poisson_solver
         *
         * @param    out - the ostream that takes in the output
         */
-        virtual void print(std::ostream& out) const noexcept = 0;
+        void print(std::ostream& out, const nTrix<float>& data) const noexcept;
 };
 
 #endif /* POISSON_SOLVER_H */

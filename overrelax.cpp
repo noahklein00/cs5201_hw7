@@ -12,89 +12,28 @@
 const float RELAXERROR = 0.000001;
 
 /********************* other functions *********************/
-void overrelax::lenError(const std::string& msg) const
+void overrelax::lenInvalArg(const std::string& msg) const
 {
     std::cout << msg << std::endl;
-    throw std::length_error(msg);
-}
-
-void overrelax::solve() noexcept
-{
-    bool resolved = false;
-
-    while (!resolved)
-    {
-        resolved = true;
-
-        short skip = 0;
-
-        for (short row = 1; row < m_data.rows() - 1; row++)
-        {
-            for (short col = 1 + skip; col < m_data.cols() - 1; col++)
-            {
-                if (m_data(row, col) != 0)
-                {
-                    const float val = (m_data(row - 1, col) + m_data(row + 1, col) +
-                                    m_data(row, col - 1) + m_data(row, col + 1))/4 +
-                                    m_step;
-                    if (m_data(row, col) > val + RELAXERROR ||
-                        m_data(row, col) < val - RELAXERROR)
-                    {
-                        resolved = false;
-                    }
-                    m_data(row, col) = val;
-                }
-            }
-
-            skip = skip == 0 ? 1 : 0;
-        }
-        
-        skip = 1;
-
-        for (short row = 1; row < m_data.rows() - 1; row++)
-        {
-            for (short col = 1; col < m_data.cols() - 1; col++)
-            {
-                if (m_data(row, col) != 0)
-                {
-                    const float val = (m_data(row - 1, col) + m_data(row + 1, col) +
-                                    m_data(row, col - 1) + m_data(row, col + 1))/4 +
-                                    m_step;
-                    m_data(row, col) = val;
-                }
-            }
-
-            skip = skip == 0 ? 1 : 0;
-        }
-    }
+    throw std::invalid_argument(msg);
 }
 
 /********************* output functions *********************/
-void overrelax::print(std::ostream& out) const noexcept
-{
-    out << (*this);
-}
-
-const nTrix<float>& overrelax::getMat() const noexcept
-{
-    return m_data;
-}
-
-bool overrelax::verify() noexcept
+bool overrelax::verify(const nTrix<float>& data, float step) noexcept
 {
     bool resolved = true;
 
-    for (short row = 1; row < m_data.rows() - 1; row++)
+    for (short row = 1; row < data.rows() - 1; row++)
     {
-        for (short col = 1; col < m_data.cols() - 1; col++)
+        for (short col = 1; col < data.cols() - 1; col++)
         {
-            if (m_data(row, col) != 0)
+            if (data(row, col) != 0)
             {
-                const float val = (m_data(row - 1, col) + m_data(row + 1, col) +
-                                m_data(row, col - 1) + m_data(row, col + 1))/4 +
-                                m_step;
-                if (m_data(row, col) > val + RELAXERROR ||
-                    m_data(row, col) < val - RELAXERROR)
+                const float val = (data(row - 1, col) + data(row + 1, col) +
+                                data(row, col - 1) + data(row, col + 1))/4 +
+                                step;
+                if (data(row, col) > val + RELAXERROR ||
+                    data(row, col) < val - RELAXERROR)
                 {
                     resolved = false;
                 }
@@ -105,33 +44,99 @@ bool overrelax::verify() noexcept
     return resolved;
 }
 
-/********************* operator functions *********************/
-overrelax& overrelax::operator=(const overrelax& source) noexcept
+nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
 {
-    if (this == &source)
+    if (step < 0)
     {
-        return *this;
+        const std::string err = "Step size must be greater than 1. "
+                                "Passed step size: " + 
+                                std::to_string(step);
+        lenInvalArg(err);
+    }
+    if (data.rows() < 1)
+    {
+        const std::string err = "the number of rows in the input data "
+                                "must bre greater than 1. Passed number"
+                                " of rows: " +
+                                std::to_string(data.rows());
+        lenInvalArg(err);
+    }
+    if (data.cols() < 1)
+    {
+        const std::string err = "the number of cols in the input data "
+                                "must bre greater than 1. Passed number"
+                                " of cols: " +
+                                std::to_string(data.cols());
+        lenInvalArg(err);
     }
 
-    m_data = source.m_data;
-    m_step = source.m_step;
+    nTrix<float> result(data.rows() + 2, data.cols() + 2);
+    for (short row = 0; row < result.rows(); row++)
+    {
+        for (short col = 0; col < result.cols(); col++)
+        {
+            if (row == 0 || col == 0 || row == result.rows() - 1 ||
+                col == result.cols() - 1)
+            {
+                result(row, col) = 0;
+            }
+            else
+            {
+                result(row, col) = data(row - 1, col - 1) == 'W'
+                                    ? 0 : 1;
+            }
+        }
+    }
 
-    return *this;
-}
+    bool resolved = false;
 
-std::ostream& operator << (std::ostream& out, const overrelax& i) noexcept
-{
-	for(int x = 1; x < i.m_data.rows() - 1; x++)
-	{
-		for(int y = 1; y < i.m_data.cols() - 1; y++)
-		{
-			out << i.m_data(x, y) << ",";
-		}
-		if(x < i.m_data.rows() - 2)
-		{
-			out << std::endl;
-		}
-	}
+    while (!resolved)
+    {
+        resolved = true;
 
-    return out;
+        short skip = 0;
+
+        for (short row = 1; row < result.rows() - 1; row++)
+        {
+            for (short col = 1 + skip; col < result.cols() - 1; col++)
+            {
+                if (result(row, col) != 0)
+                {
+                    const float val = (result(row - 1, col) +
+                                      result(row + 1, col) +
+                                      result(row, col - 1) +
+                                      result(row, col + 1))/4 + step;
+                    if (result(row, col) > val + RELAXERROR ||
+                        result(row, col) < val - RELAXERROR)
+                    {
+                        resolved = false;
+                    }
+                    result(row, col) = val;
+                }
+            }
+
+            skip = skip == 0 ? 1 : 0;
+        }
+        
+        skip = 1;
+
+        for (short row = 1; row < result.rows() - 1; row++)
+        {
+            for (short col = 1; col < result.cols() - 1; col++)
+            {
+                if (result(row, col) != 0)
+                {
+                    const float val = (result(row - 1, col) +
+                                      result(row + 1, col) +
+                                      result(row, col - 1) +
+                                      result(row, col + 1))/4 + step;
+                    result(row, col) = val;
+                }
+            }
+
+            skip = skip == 0 ? 1 : 0;
+        }
+    }
+
+    return result;
 }

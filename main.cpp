@@ -55,9 +55,17 @@ int main(int argc, char *argv[])
     }
     else
     {
-        overrelax relax(inputMat, STEPSIZE);
+        overrelax relax;
 
-        relax.print(outputFile);
+        std::cout << inputMat << std::endl;
+        
+        nTrix<float> result = relax(inputMat, STEPSIZE);
+
+        std::cout << result << std::endl;
+
+        std::cout << "checking: " << (relax.verify(result, STEPSIZE) ? "true" : "false") << std::endl;
+
+        relax.print(outputFile, result);
     }
 
     outputFile.close();
