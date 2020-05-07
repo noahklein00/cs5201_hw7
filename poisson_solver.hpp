@@ -1,6 +1,5 @@
-#include "poisson_solver.h"
-
-void poisson_solver::print(std::ostream& out, const nTrix<float>& data)
+template <typename DerivedSolver>
+void poisson_solver<DerivedSolver>::print(std::ostream& out, const nTrix<float>& data)
                                                                   const noexcept
 {
 	for(int x = 1; x < data.rows() - 1; x++)

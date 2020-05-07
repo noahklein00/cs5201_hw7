@@ -18,6 +18,7 @@
  * @class   poisson_solver
  * @brief   
  */
+template <typename DerivedSolver>
 class poisson_solver
 {
     public:
@@ -48,4 +49,5 @@ class poisson_solver
         void print(std::ostream& out, const nTrix<float>& data) const noexcept;
 };
 
+#include "poisson_solver.hpp"
 #endif /* POISSON_SOLVER_H */

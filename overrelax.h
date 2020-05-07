@@ -20,7 +20,7 @@
  * @class   
  * @brief   
  */
-class overrelax : public poisson_solver
+class overrelax : public poisson_solver<overrelax>
 {
     private:
         /********************* other functions *********************/
@@ -35,6 +35,7 @@ class overrelax : public poisson_solver
         */
         void lenInvalArg(const std::string& msg) const;
     public:
+
         /********************* output functions *********************/
         /**
         * @brief    Checks to see if the solution is solved. Used to double
