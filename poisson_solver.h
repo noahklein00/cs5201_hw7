@@ -46,8 +46,7 @@ class poisson_solver
         *
         * @param    out - the ostream that takes in the output
         */
-        void print(std::ostream& out, const nTrix<float>& data) const noexcept;
+        virtual void print(std::ostream& out, const nTrix<float>& data) const noexcept = 0;
 };
 
-#include "poisson_solver.hpp"
 #endif /* POISSON_SOLVER_H */

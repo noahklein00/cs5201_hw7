@@ -52,10 +52,10 @@ int main(int argc, char *argv[])
 
     if (func == 0)
     {
-      float STEP = 1;
-      cholesky choly;
-      nTrix<float> result = choly(inputMat, STEP);
-      choly.print(outputFile, result);
+        float STEP = 1;
+        cholesky choly;
+        nTrix<float> result = choly(inputMat, STEP);
+        choly.print(outputFile, result);
     }
     else
     {

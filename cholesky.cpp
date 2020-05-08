@@ -390,3 +390,19 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
 //   }
 //   return x;
 // }
+
+
+void cholesky::print(std::ostream& out, const nTrix<float>& data) const noexcept
+{
+	for(int x = 0; x < data.rows(); x++)
+	{
+		for(int y = 0; y < data.cols(); y++)
+		{
+			out << data(x, y) << ",";
+		}
+		if(x < data.rows() - 2)
+		{
+			out << std::endl;
+		}
+	}
+}

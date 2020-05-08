@@ -75,6 +75,16 @@ class overrelax : public poisson_solver<overrelax>
         * @return   the solution matrix
         */
         nTrix<float> operator()(const nTrix<char>& data, float step) const;
+
+        /**
+        * @brief    Used to print out the matrix in a comma deliminated fashion
+        * @pre      N/A
+        * @post     modifies the passed parameter to print out the comma
+        *           deliminated matrix
+        *
+        * @param    out - the ostream that takes in the output
+        */
+        void print(std::ostream& out, const nTrix<float>& data) const noexcept;
 };
 
 #endif /* OVERRELAX_H */
