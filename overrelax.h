@@ -23,6 +23,7 @@
 class overrelax : public poisson_solver<overrelax>
 {
     private:
+        /** The minimal change needed to mark the solution as found (+/-)*/
         const float m_error;
         /********************* other functions *********************/
         /**
@@ -36,12 +37,30 @@ class overrelax : public poisson_solver<overrelax>
         */
         void lenInvalArg(const std::string& msg) const;
     public:
-        overrelax()
+        /********************* constructor/destructors *********************/
+        /**
+        * @brief    creates a overrelax class 
+        * @pre      N/A
+        * @post     creates a overrelax class with an error of .000001. This is
+        *           the maximum absolute change between iterations that is
+        *           accepted for a found solution per cell
+        */
+        overrelax() noexcept
             : m_error(.000001)
         {};
-        overrelax(float error)
+
+        /**
+        * @brief    creates a overrelax class 
+        * @pre      N/A
+        * @post     creates a overrelax class with the passed error
+        * 
+        * @param    error - the maximum absolute change between iterations that
+        *                   is accepted for a found solution per cell
+        */
+        overrelax(float error) noexcept
             : m_error(error)
         {};
+
         /********************* output functions *********************/
         /**
         * @brief    Checks to see if the solution is solved. Used to double
@@ -63,7 +82,8 @@ class overrelax : public poisson_solver<overrelax>
         * @brief    Used to get the solution to the poisson equation
         * @pre      the matrix must be at least a 1x1, and the step size must be
         *           greater than 0
-        * @post     returns the solution matrix
+        * @post     returns the solution matrix with number within the error
+        *           threshold
         * 
         * @exception    throws a invalid argument error if the matrix is too
         *               small or the step size is less than 1.
@@ -80,7 +100,8 @@ class overrelax : public poisson_solver<overrelax>
         * @brief    Used to print out the matrix in a comma deliminated fashion
         * @pre      N/A
         * @post     modifies the passed parameter to print out the comma
-        *           deliminated matrix
+        *           deliminated matrix. The print out goes to 6 significant
+        *           digits
         *
         * @param    out - the ostream that takes in the output
         */
