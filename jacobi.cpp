@@ -1,5 +1,5 @@
 /**
- * @file    overrelax.cpp
+ * @file    jacobi.cpp
  * @author  Jeffrey Strahm
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
@@ -7,24 +7,24 @@
  * @date    5/2/20
 */
 
-#include "overrelax.h"
+#include "jacobi.h"
 
 /********************* other functions *********************/
-void overrelax::invalArgErr(const std::string& msg) const
+void jacobi::invalArgErr(const std::string& msg) const
 {
     std::cout << msg << std::endl;
     throw std::invalid_argument(msg);
 }
 
 /********************* operator functions *********************/
-overrelax& overrelax::operator= (const overrelax& source) noexcept
+jacobi& jacobi::operator= (const jacobi& source) noexcept
 {
     m_error = source.m_error;
 
     return *this;
 }
 
-nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
+nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
 {
     if (step < 0)
     {
@@ -69,16 +69,19 @@ nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
     }
 
     bool resolved = false;
+    int i = 0;
+
+    const short rowSize = result.rows() - 1;
+    const short colSize = result.cols() - 1;
 
     while (!resolved)
     {
+        i++;
         resolved = true;
 
-        short skip = 0;
-
-        for (short row = 1; row < result.rows() - 1; row++)
+        for (short row = 1; row < rowSize; row++)
         {
-            for (short col = 1 + skip; col < result.cols() - 1; col++)
+            for (short col = 1; col < colSize; col++)
             {
                 if (result(row, col) != 0)
                 {
@@ -94,35 +97,15 @@ nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
                     result(row, col) = val;
                 }
             }
-
-            skip = skip == 0 ? 1 : 0;
-        }
-        
-        skip = 1;
-
-        for (short row = 1; row < result.rows() - 1; row++)
-        {
-            for (short col = 1; col < result.cols() - 1; col++)
-            {
-                if (result(row, col) != 0)
-                {
-                    const float val = (result(row - 1, col) +
-                                      result(row + 1, col) +
-                                      result(row, col - 1) +
-                                      result(row, col + 1))/4 + step;
-                    result(row, col) = val;
-                }
-            }
-
-            skip = skip == 0 ? 1 : 0;
         }
     }
+    std::cout << "layer: " << i << std::endl;
 
     return result;
 }
 
 /********************* output functions *********************/
-bool overrelax::verify(const nTrix<float>& data, float step) noexcept
+bool jacobi::verify(const nTrix<float>& data, float step) noexcept
 {
     bool resolved = true;
 
@@ -147,7 +130,7 @@ bool overrelax::verify(const nTrix<float>& data, float step) noexcept
     return resolved;
 }
 
-void overrelax::print(std::ostream& out, const nTrix<float>& data) const
+void jacobi::print(std::ostream& out, const nTrix<float>& data) const
                                                                         noexcept
 {
 	for(int x = 1; x < data.rows() - 1; x++)

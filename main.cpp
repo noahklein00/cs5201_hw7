@@ -12,7 +12,7 @@
 
 #include <numeric>
 #include "nTrix.h"
-#include "overrelax.h"
+#include "jacobi.h"
 #include "cholesky.h"
 
 /** cost to move from one pixel to the next */
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        overrelax relax;
+        jacobi relax;
 
         nTrix<float> result = relax(inputMat, STEPSIZE);
 

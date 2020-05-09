@@ -1,5 +1,5 @@
 /**
- * @file    overrelax.h
+ * @file    jacobi.h
  * @author  Jeffrey Strahm
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
@@ -14,13 +14,13 @@
 #include "poisson_solver.h"
 
 #ifndef OVERRELRX_H
-#define OVERRELAX_H
+#define jacobi_H
 
 /**
  * @class   
  * @brief   
  */
-class overrelax : public poisson_solver<overrelax>
+class jacobi : public poisson_solver<jacobi>
 {
     private:
         /** The minimal change needed to mark the solution as found (+/-)*/
@@ -39,25 +39,25 @@ class overrelax : public poisson_solver<overrelax>
     public:
         /********************* constructor/destructors *********************/
         /**
-        * @brief    creates a overrelax class 
+        * @brief    creates a jacobi class 
         * @pre      N/A
-        * @post     creates a overrelax class with an error of .000001. This is
+        * @post     creates a jacobi class with an error of .000001. This is
         *           the maximum absolute change between iterations that is
         *           accepted for a found solution per cell
         */
-        overrelax() noexcept
+        jacobi() noexcept
             : m_error(.000001)
         {};
 
         /**
-        * @brief    creates a overrelax class 
+        * @brief    creates a jacobi class 
         * @pre      N/A
-        * @post     creates a overrelax class with the passed error
+        * @post     creates a jacobi class with the passed error
         * 
         * @param    error - the maximum absolute change between iterations that
         *                   is accepted for a found solution per cell
         */
-        overrelax(float error)
+        jacobi(float error)
             : m_error(error)
         {
             if (error <= 0)
@@ -69,25 +69,25 @@ class overrelax : public poisson_solver<overrelax>
         };
 
         /**
-        * @brief    overrelax copy constructor
+        * @brief    jacobi copy constructor
         * @pre      N/A
-        * @post     creates a overrelax class with the same error
+        * @post     creates a jacobi class with the same error
         * 
-        * @param    source - the overrelax class to copy
+        * @param    source - the jacobi class to copy
         */
-        overrelax(const overrelax& source) noexcept
+        jacobi(const jacobi& source) noexcept
             : m_error(source.m_error)
         {};
 
         /********************* operator functions *********************/
         /**
-        * @brief    overrelax copy constructor
+        * @brief    jacobi copy constructor
         * @pre      N/A
-        * @post     creates a overrelax class with the same error
+        * @post     creates a jacobi class with the same error
         * 
-        * @param    source - the overrelax class to copy
+        * @param    source - the jacobi class to copy
         */
-        overrelax& operator= (const overrelax& source) noexcept;
+        jacobi& operator= (const jacobi& source) noexcept;
 
         /**
         * @brief    Used to get the solution to the poisson equation
@@ -105,7 +105,8 @@ class overrelax : public poisson_solver<overrelax>
         *
         * @return   the solution matrix
         */
-        nTrix<float> operator()(const nTrix<char>& data, float step) const;
+        nTrix<float> operator()(const nTrix<char>& data, float step) const
+                                                                       override;
 
         /********************* output functions *********************/
         /**
@@ -133,7 +134,8 @@ class overrelax : public poisson_solver<overrelax>
         *
         * @param    out - the ostream that takes in the output
         */
-        void print(std::ostream& out, const nTrix<float>& data) const noexcept;
+        void print(std::ostream& out, const nTrix<float>& data) const noexcept
+                                                                       override;
 };
 
-#endif /* OVERRELAX_H */
+#endif /* jacobi_H */
