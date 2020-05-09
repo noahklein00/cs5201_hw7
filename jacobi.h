@@ -130,7 +130,7 @@ class jacobi : public poisson_solver<jacobi>
         * @pre      N/A
         * @post     modifies the passed parameter to print out the comma
         *           deliminated matrix. The print out goes to 6 significant
-        *           digits
+        *           figures.
         *
         * @param    out - the ostream that takes in the output
         */

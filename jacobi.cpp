@@ -69,14 +69,12 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
     }
 
     bool resolved = false;
-    int i = 0;
 
     const short rowSize = result.rows() - 1;
     const short colSize = result.cols() - 1;
 
     while (!resolved)
     {
-        i++;
         resolved = true;
 
         for (short row = 1; row < rowSize; row++)
@@ -99,7 +97,6 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
             }
         }
     }
-    std::cout << "layer: " << i << std::endl;
 
     return result;
 }
