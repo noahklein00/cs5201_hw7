@@ -145,11 +145,11 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
     }
   }
 
-  for(i = 0; i < x.size(); ++i)
+  for(i = 0; i < static_cast<int>(x.size()); ++i)
   {
     if(x[i] == 0)
     {
-      for(j = 0; j < x.size(); ++j)
+      for(j = 0; j < static_cast<int>(x.size()); ++j)
       {
         if(i != j)
         {
@@ -214,7 +214,7 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
     }
   }
 
-  for(i = 0; i < y.size(); ++i)
+  for(i = 0; i < static_cast<int>(y.size()); ++i)
   {
     if(x[i] != 0)
     {

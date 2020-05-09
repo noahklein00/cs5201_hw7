@@ -24,7 +24,7 @@ class overrelax : public poisson_solver<overrelax>
 {
     private:
         /** The minimal change needed to mark the solution as found (+/-)*/
-        const float m_error;
+        float m_error;
         /********************* other functions *********************/
         /**
         * @brief    prints out and throws a invalid_argument error
@@ -35,7 +35,7 @@ class overrelax : public poisson_solver<overrelax>
         *
         * @param    msg - the message printed to explain the error
         */
-        void lenInvalArg(const std::string& msg) const;
+        void invalArgErr(const std::string& msg) const;
     public:
         /********************* constructor/destructors *********************/
         /**
@@ -57,26 +57,37 @@ class overrelax : public poisson_solver<overrelax>
         * @param    error - the maximum absolute change between iterations that
         *                   is accepted for a found solution per cell
         */
-        overrelax(float error) noexcept
+        overrelax(float error)
             : m_error(error)
+        {
+            if (error <= 0)
+            {
+                const std::string err = "error mussed be greater than 0. Passed"
+                                        " error: " + std::to_string(error);
+                invalArgErr(err);
+            }
+        };
+
+        /**
+        * @brief    overrelax copy constructor
+        * @pre      N/A
+        * @post     creates a overrelax class with the same error
+        * 
+        * @param    source - the overrelax class to copy
+        */
+        overrelax(const overrelax& source) noexcept
+            : m_error(source.m_error)
         {};
 
-        /********************* output functions *********************/
+        /********************* operator functions *********************/
         /**
-        * @brief    Checks to see if the solution is solved. Used to double
-        *           check the values
+        * @brief    overrelax copy constructor
         * @pre      N/A
-        * @post     returns if the state has been verified to have been solved
-        *           with sufficient accuracy
+        * @post     creates a overrelax class with the same error
         * 
-        * @param    data - the matrix to be verified.
-        * @param    step - the cost to move to an adjacent cell, must be greater
-        *                  than zero
-        * 
-        * @return   if the state has been verified to have been solved with
-        *           sufficient accuracy
+        * @param    source - the overrelax class to copy
         */
-        bool verify(const nTrix<float>& data, float step) noexcept;
+        overrelax& operator= (const overrelax& source) noexcept;
 
         /**
         * @brief    Used to get the solution to the poisson equation
@@ -95,6 +106,23 @@ class overrelax : public poisson_solver<overrelax>
         * @return   the solution matrix
         */
         nTrix<float> operator()(const nTrix<char>& data, float step) const;
+
+        /********************* output functions *********************/
+        /**
+        * @brief    Checks to see if the solution is solved. Used to double
+        *           check the values
+        * @pre      N/A
+        * @post     returns if the state has been verified to have been solved
+        *           with sufficient accuracy
+        * 
+        * @param    data - the matrix to be verified.
+        * @param    step - the cost to move to an adjacent cell, must be greater
+        *                  than zero
+        * 
+        * @return   if the state has been verified to have been solved with
+        *           sufficient accuracy
+        */
+        bool verify(const nTrix<float>& data, float step) noexcept;
 
         /**
         * @brief    Used to print out the matrix in a comma deliminated fashion

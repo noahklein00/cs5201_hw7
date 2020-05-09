@@ -10,36 +10,18 @@
 #include "overrelax.h"
 
 /********************* other functions *********************/
-void overrelax::lenInvalArg(const std::string& msg) const
+void overrelax::invalArgErr(const std::string& msg) const
 {
     std::cout << msg << std::endl;
     throw std::invalid_argument(msg);
 }
 
-/********************* output functions *********************/
-bool overrelax::verify(const nTrix<float>& data, float step) noexcept
+/********************* operator functions *********************/
+overrelax& overrelax::operator= (const overrelax& source) noexcept
 {
-    bool resolved = true;
+    m_error = source.m_error;
 
-    for (short row = 1; row < data.rows() - 1; row++)
-    {
-        for (short col = 1; col < data.cols() - 1; col++)
-        {
-            if (data(row, col) != 0)
-            {
-                const float val = (data(row - 1, col) + data(row + 1, col) +
-                                data(row, col - 1) + data(row, col + 1))/4 +
-                                step;
-                if (data(row, col) > val + m_error ||
-                    data(row, col) < val - m_error)
-                {
-                    resolved = false;
-                }
-            }
-        }
-    }
-
-    return resolved;
+    return *this;
 }
 
 nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
@@ -49,7 +31,7 @@ nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
         const std::string err = "Step size must be greater than 1. "
                                 "Passed step size: " + 
                                 std::to_string(step);
-        lenInvalArg(err);
+        invalArgErr(err);
     }
     if (data.rows() < 1)
     {
@@ -57,7 +39,7 @@ nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
                                 "must bre greater than 1. Passed number"
                                 " of rows: " +
                                 std::to_string(data.rows());
-        lenInvalArg(err);
+        invalArgErr(err);
     }
     if (data.cols() < 1)
     {
@@ -65,7 +47,7 @@ nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
                                 "must bre greater than 1. Passed number"
                                 " of cols: " +
                                 std::to_string(data.cols());
-        lenInvalArg(err);
+        invalArgErr(err);
     }
 
     nTrix<float> result(data.rows() + 2, data.cols() + 2);
@@ -137,6 +119,32 @@ nTrix<float> overrelax::operator()(const nTrix<char>& data, float step) const
     }
 
     return result;
+}
+
+/********************* output functions *********************/
+bool overrelax::verify(const nTrix<float>& data, float step) noexcept
+{
+    bool resolved = true;
+
+    for (short row = 1; row < data.rows() - 1; row++)
+    {
+        for (short col = 1; col < data.cols() - 1; col++)
+        {
+            if (data(row, col) != 0)
+            {
+                const float val = (data(row - 1, col) + data(row + 1, col) +
+                                data(row, col - 1) + data(row, col + 1))/4 +
+                                step;
+                if (data(row, col) > val + m_error ||
+                    data(row, col) < val - m_error)
+                {
+                    resolved = false;
+                }
+            }
+        }
+    }
+
+    return resolved;
 }
 
 void overrelax::print(std::ostream& out, const nTrix<float>& data) const
