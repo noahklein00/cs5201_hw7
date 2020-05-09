@@ -1,140 +1,135 @@
+/**
+ * @file    cholesky.cpp
+ * @author  Jeffrey Strahm and Noah Klein
+ * @brief   class: CS5201 - Prof. Price
+ * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
+ * @brief   Due: 5/10/20
+ * @date    5/2/20
+*/
+
 #include "cholesky.h"
+
+void cholesky::invalArgErr(const std::string& msg) const
+{
+    std::cout << msg << std::endl;
+    throw std::invalid_argument(msg);
+}
 
 nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
 {
-  //x and b are converted to vectors
+  //x and b are converted to vectors.
+  //A is the matrix that holds the system of equations.
   nTrix<float> A(data.rows() * data.cols(), data.rows() * data.cols());
+  //solution is the matrix that holds the final matrix representation of the
+  //solution vector.
   nTrix<float> solution(data.rows(), data.cols());
+  //L is the lower triangular matrix that A decomposes into through cholesky
+  //decomposition.
   nTrix<float> L(A.rows(), A.cols());
+  //x is the vector representation of the solution to the system of equations.
   vector<float> x(A.rows());
+  //y is the intermediate vector constructed while solving Ly = b and Ux = y
+  //where U = L.transpose().
   vector<float> y(A.rows());
+  //b is the vector of known points along the boundary that gets the forcing
+  //function added to it.
   vector<float> b(A.rows());
+  //temp is a variable that gets used to store temporary information when
+  //solving Ly = b and Ux = y.
   float temp;
+  //i,j, and k are counters that are initialized at the start to avoid
+  //initializing them during the for loops. This saves a lot of time.
   int i = 0;
   int j = 0;
   int k = 0;
+  //SIZE is a constant that represents the N value of the NxN matrices used.
   const int SIZE = L.rows();
-  const int ROOTSIZE = sqrt(L.rows());
+  //COLSIZE is a constant that represents the number of columns in the original
+  //input matrix passed.
+  const int COLSIZE = data.cols();
+
+  if (step <= 0)
+  {
+    const std::string err = "Step size must be greater than 1. "
+                            "Passed step size: " + std::to_string(step);
+    invalArgErr(err);
+  }
 
   //filling the x vector with values
   for(i = data.rows()-1; i >= 0; --i)
   {
     for(j = 0; j < data.cols(); ++j)
     {
+      //Since we know that all 'W' values have no effect we can set them equal
+      //to 0.
       if(data(i,j) == 'W')
       {
         x[k] = 0;
       }
+      //The 'B' values are set to a temporary placeholder of 1.
       else if(data(i,j) == 'B')
       {
         x[k] = 1;
       }
       else
       {
-        throw(std::invalid_argument("Invalid pixel character"));
+        //throws an error if the input matrix is not composed of B's and W's
+        const std::string err = "Input character matrix is not composed of only"
+                                 " B and W.";
+        invalArgErr(err);
       }
       ++k;
     }
   }
 
-  //filling the b vector with values
+  //Since we know the border will be all 0's, and that the forcing function is
+  //a constant, we can set the entire b vector equal to that value.
   for(i = 0; i < SIZE; ++i)
   {
     b[i] = step;
   }
 
-  //filling the A matrix with values
-  // for(i = 0; i < A.rows(); ++i)
-  // {
-  //   // if(x[i] != 0)
-  //   // {
-  //   if(i <= ROOTSIZE + 1)
-  //   {
-  //     j = 0;
-  //   }
-  //   else
-  //   {
-  //     j = i - (ROOTSIZE + 1);
-  //   }
-  //   if(i < SIZE - ROOTSIZE - 1)
-  //   {
-  //     k = i + ROOTSIZE;
-  //   }
-  //   else
-  //   {
-  //     k = A.rows();
-  //   }
-  //     for(; j < k; ++j)
-  //     {
-  //       std::cout << "j: " << j << std::endl;
-  //       if(i == j)
-  //       {
-  //         A(i,j) = 1.0;
-  //       }
-  //       else if(i == j-1 && ((i+1)%static_cast<int>(sqrt(A.rows()))) != 0)
-  //       {
-  //         A(i,j) = -.25;
-  //       }
-  //       else if(i == j+1 && ((i)%static_cast<int>(sqrt(A.rows()))) != 0)
-  //       {
-  //         A(i,j) = -.25;
-  //       }
-  //       else if(i == j-sqrt(A.rows()))
-  //       {
-  //         A(i,j) = -.25;
-  //       }
-  //       else if(i == j+sqrt(A.rows()))
-  //       {
-  //         A(i,j) = -.25;
-  //       }
-  //       else
-  //       {
-  //         A(i,j) = 0.0;
-  //       }
-  //     }
-  //   // }
-  //   // else
-  //   // {
-  //   //   A(i,i) = 1.0;
-  //   // }
-  // }
-  //
-  // for(i = 0; i < A.rows(); ++i)
-  // {
-  //   if(x[i] == 0)
-  //   {
-  //     for(j = 0; j < A.rows(); ++j)
-  //     {
-  //       if(i != j)
-  //       {
-  //         A(i,j) = 0;
-  //         A(j,i) = 0;
-  //       }
-  //     }
-  //   }
-  // }
-
+  //Filling in the values of the A matrix.
   for(i = 0; i < A.rows(); i++)
   {
-    for(j = 0; j < A.rows(); j++)
+    //Since we know that A will always be banded and that the bands will be
+    //bound around the diagonal by +/- COLSIZE, we can just have j skip over
+    //the columns that we already know will equal 0 and focus on the columns
+    //that have dependent values.
+    if(i <= (COLSIZE + 1))
+    {
+      j = 0;
+      k = i + COLSIZE;
+    }
+    else if(i >= SIZE - COLSIZE - 1)
+    {
+      j = i - COLSIZE;
+      k = SIZE - 1;
+    }
+    else
+    {
+      j = i - COLSIZE;
+      k = i + COLSIZE;
+    }
+    for(; j < k; j++)
     {
       if(i == j)
       {
         A(i,j) = 1.0;
       }
-      else if(i == j-1 && ((i+1)%static_cast<int>(sqrt(A.rows()))) != 0)
+      else if(i == j-COLSIZE)
       {
         A(i,j) = -.25;
       }
-      else if(i == j+1 && ((i)%static_cast<int>(sqrt(A.rows()))) != 0)
+      else if(i == j+COLSIZE)
       {
         A(i,j) = -.25;
       }
-      else if(i == j-sqrt(A.rows()))
+      else if((i == j-1) && (i+1)%(COLSIZE) != 0)
       {
         A(i,j) = -.25;
       }
-      else if(i == j+sqrt(A.rows()))
+      else if((i == j+1) && (i)%(COLSIZE) != 0)
       {
         A(i,j) = -.25;
       }
@@ -145,55 +140,54 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
     }
   }
 
-  for(i = 0; i < static_cast<int>(x.size()); ++i)
+  //Since we know that 'W' or 0 values in the x vector won't have their weights
+  //determined by their neighbors, we go through the A matrix and set any values
+  //that depend on a 'W' neighbor to 0.
+  for(i = 0; i < SIZE; ++i)
   {
     if(x[i] == 0)
     {
-      for(j = 0; j < static_cast<int>(x.size()); ++j)
+      for(j = 0; j < SIZE; ++j)
       {
         if(i != j)
         {
           A(i,j) = 0;
           A(j,i) = 0;
         }
-        // if(j > i)
-        // {
-        //   A(j,i) = 0;
-        // }
       }
     }
   }
 
-  for(;i < SIZE; ++i)
-  {
-    for(;j < SIZE; ++j)
-    {
-      L(i,j) = 0;
-    }
-  }
-
+  //This loop decomposes the A matrix into a lower triangular matrix.
   for(i = 0; i < SIZE; ++i)
   {
-    if(i <= (ROOTSIZE + 1))
+    //We can use the same properties that we used in the construction of the
+    //A matrix to bound the loop through the columns to only focus on the area
+    //within the band.
+    if(i <= (COLSIZE + 1))
     {
       j = 0;
     }
     else
     {
-      j = i - (ROOTSIZE + 1);
+      j = i - (COLSIZE + 1);
     }
 
     for(; j <= i; ++j)
     {
-      if(i <= (ROOTSIZE + 1))
+      //A similar band check.
+      if(i <= (COLSIZE + 1))
       {
         k = 0;
       }
       else
       {
-        k = i - (ROOTSIZE + 1);
+        k = i - (COLSIZE + 1);
       }
 
+      //Based off of the formula for cholesky decomposition, for any points on
+      //the diagonal  L(i,i) = the square root of A(i,i) minus the sum of all
+      //the points on that row from the L matrix.
       if(i == j)
       {
         for(; k < j; ++k)
@@ -202,6 +196,8 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
         }
         L(i,j) = std::sqrt(A(j,j) - temp);
       }
+      //For any point not on the diagonal, L(i,j) = 1/L(j,j) times A(i,j) minus
+      //the sum of all the products of L(i,k) * L(j,k).
       else
       {
         for(; k < j; ++k)
@@ -214,19 +210,21 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
     }
   }
 
-  for(i = 0; i < static_cast<int>(y.size()); ++i)
+  //Solving the y vector for Ly = b using forward substitution.
+  for(i = 0; i < SIZE; ++i)
   {
+    //similar bound check.
     if(x[i] != 0)
     {
-      // if(i <= ROOTSIZE + 1)
-      // {
-      //   j = 0;
-      // }
-      // else
-      // {
-      //   j = i - (ROOTSIZE + 1);
-      // }
-      for(j = 0; j < i; ++j)
+      if(i <= COLSIZE)
+      {
+        j = 0;
+      }
+      else
+      {
+        j = i - COLSIZE;
+      }
+      for(; j < i; ++j)
       {
         temp += L(i,j) * y[j];
       }
@@ -235,19 +233,21 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
     }
   }
 
-  for(i = x.size()-1; i >= 0; --i)
+  //solving the x vector for (U)x = y using backward substitution with U =
+  //L.transpose().
+  for(i = SIZE-1; i >= 0; --i)
   {
     if(x[i] != 0)
     {
-      // if(i >= SIZE - ROOTSIZE - 1)
-      // {
-      //   j = 0;
-      // }
-      // else
-      // {
-      //   j = i + ROOTSIZE;
-      // }
-      for(j = x.size()-1; j > i; --j)
+      if(i >= SIZE - COLSIZE - 1)
+      {
+        j = 0;
+      }
+      else
+      {
+        j = i + COLSIZE;
+      }
+      for(; j > i; --j)
       {
         temp += L(j,i) * x[j];
       }
@@ -256,10 +256,11 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
     }
   }
 
-  i = 0;
-  j = 0;
+  //resetting k
   k = 0;
 
+  //Filling in the matrix representation of the solution so it can be
+  //cleanly returned to main.
   for(i = solution.rows()-1; i >= 0; --i)
   {
     for(j = 0; j < solution.cols(); ++j)
@@ -272,126 +273,6 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
   return solution;
 }
 
-// void cholesky::print(std::ostream& out) const noexcept
-// {
-//   out << (*this);
-//   return;
-// }
-//
-// std::ostream& operator<<(std::ostream& out,const cholesky& i) noexcept
-// {
-//   int y = 0;
-//   for(int x = 0; x < i.solution.rows(); ++x)
-// 	{
-// 		for(y = 0; y < i.solution.cols(); ++y)
-// 		{
-//       if(y != 0)
-//       {
-//         out << "," << i.solution(x,y);
-//       }
-//       else
-//       {
-//         out << i.solution(x,y);
-//       }
-// 		}
-//     out << std::endl;
-// 	}
-//
-//   return out;
-// }
-
-// vector<float> cholesky::operator()(const nTrix<float>& A, vector<float>& x, const vector<float>& b)
-// {
-//   nTrix<float> L(A.rows(), A.cols());
-//   //nTrix<float> U(A.rows(), A.cols());
-//   vector<float> y(A.rows());
-//   float temp = 0;
-//
-//   for(int i = 0; i < L.rows(); i++)
-//   {
-//     for(int j = 0; j < L.cols(); j++)
-//     {
-//       L(i,j) = float(0.0);
-//       //U(i,j) = float(0.0);
-//     }
-//   }
-//
-//   int s = 0;
-//   int t = 0;
-//   int r = 0;
-//   //start_s = clock();
-//   for(; s < L.rows(); ++s)
-//   {
-//     if(s <= sqrt(L.rows())+1)
-//     {
-//       t=0;
-//     }
-//     else
-//     {
-//       t = s - (sqrt(L.rows())+1);
-//     }
-//     //t = 0;
-//     for(; t <= s; ++t)
-//     {
-//       //r = 0;
-//       if(s <= sqrt(L.rows())+1)
-//       {
-//         r=0;
-//       }
-//       else
-//       {
-//         r = s - (sqrt(L.rows())+1);
-//       }
-//       if(s == t)
-//       {
-//         for(; r < t; ++r)
-//         {
-//           temp += std::pow(L(s,r),2);
-//         }
-//         L(s,t) = std::sqrt(A(t,t) - temp);
-//       }
-//       else
-//       {
-//         for(; r < t; ++r)
-//         {
-//           temp += (L(s,r) * L(t,r));
-//         }
-//         L(s,t) = (1.0/L(t,t)) * (A(s,t) - temp);
-//       }
-//       temp = 0;
-//     }
-//   }
-//
-//   //U = L.transpose();
-//   for(int i = 0; i < y.size(); i++)
-//   {
-//     if(x[i] != 0) //skips solving the white pixels
-//     {
-//       for(int j = 0; j < i; j++)
-//       {
-//         temp += L(i,j) * y[j];
-//       }
-//       y[i] = (b[i] - temp)/L(i,i);
-//       temp = 0;
-//     }
-//   }
-//
-//   for(int i = x.size()-1; i >= 0; i--)
-//   {
-//     if(x[i] != 0) //skips solving the white pixels
-//     {
-//       for(int j = x.size()-1; j > i; j--)
-//       {
-//         temp += L(j,i) * x[j];
-//       }
-//       x[i] = (y[i] - temp)/L(i,i);
-//       temp = 0;
-//     }
-//   }
-//   return x;
-// }
-
-
 void cholesky::print(std::ostream& out, const nTrix<float>& data) const noexcept
 {
 	for(int x = 0; x < data.rows(); x++)
@@ -400,7 +281,7 @@ void cholesky::print(std::ostream& out, const nTrix<float>& data) const noexcept
 		{
 			out << data(x, y) << ",";
 		}
-		if(x < data.rows() - 2)
+		if(x < data.rows() - 1)
 		{
 			out << std::endl;
 		}

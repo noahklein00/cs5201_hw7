@@ -1,12 +1,12 @@
 /**
  * @file    poisson_solver.h
- * @author  Jeffrey Strahm
+ * @author  Jeffrey Strahm and Noah Klein
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 - Complex Numbers, Outer Products, and Quantum Computing
  * @brief   Due: 5/10/2020
  * @date    5/3/2020
  *
- * @brief   
+ * @brief
 */
 
 #include "nTrix.h"
@@ -16,7 +16,7 @@
 
 /**
  * @class   poisson_solver
- * @brief   
+ * @brief   interface base class for classes that solve poisson equation.
  */
 template <typename DerivedSolver>
 class poisson_solver
@@ -26,9 +26,9 @@ class poisson_solver
         * @brief    Used to get the solution to the poisson equation
         * @pre      based on implimentation.
         * @post     returns the solution matrix
-        * 
+        *
         * @exception    errors are based on implimentation.
-        * 
+        *
         * @param    data - the input char matrix to be used as a base
         * @param    step - the cost to move to an adjacent cell, must be greater
         *                  than zero
@@ -45,6 +45,8 @@ class poisson_solver
         *           deliminated matrix
         *
         * @param    out - the ostream that takes in the output
+        * @param    data - nTrix<float> that is filled with the solution to the
+        *           given system.
         */
         virtual void print(std::ostream& out, const nTrix<float>& data) const
                                                                    noexcept = 0;

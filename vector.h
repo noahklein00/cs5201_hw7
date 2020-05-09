@@ -1,5 +1,5 @@
 /**
- * @file    vector.cpp
+ * @file    vector.h
  * @author  Jeffrey Strahm
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 - Complex Numbers, Outer Products, and Quantum Computing

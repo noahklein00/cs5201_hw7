@@ -1,6 +1,6 @@
 /**
  * @file    jacobi.cpp
- * @author  Jeffrey Strahm
+ * @author  Jeffrey Strahm and Noah Klein
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 5/10/20
@@ -29,7 +29,7 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
     if (step < 0)
     {
         const std::string err = "Step size must be greater than 1. "
-                                "Passed step size: " + 
+                                "Passed step size: " +
                                 std::to_string(step);
         invalArgErr(err);
     }
