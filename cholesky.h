@@ -9,11 +9,11 @@
 class cholesky: public poisson_solver<cholesky>
 {
   public:
-    virtual nTrix<float> operator()(const nTrix<char>& data, float step) const;
+    virtual nTrix<float> operator()(const nTrix<char>& data, float step) const override;
     //vector<float> operator()(const nTrix<float>& A, vector<float>& x, const vector<float>& b);
     //virtual void print(std::ostream& out) const noexcept;
     //friend std::ostream& operator<<(std::ostream& out, const cholesky& i) noexcept;
-    void print(std::ostream& out, const nTrix<float>& data) const noexcept;
+    void print(std::ostream& out, const nTrix<float>& data) const noexcept override;
 };
 
 #endif
