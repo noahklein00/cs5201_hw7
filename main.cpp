@@ -1,13 +1,13 @@
 /**
  * @file    main.cpp
- * @author  Jeffrey Strahm
+ * @author  Jeffrey Strahm and Noah Klein
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 4/20/2020
  * @date    4/20/2020
  *
- * @brief   This is the driver that runs the lander situation using a
- *          combination of filters.
+ * @brief   This driver takes an input matrix of B and W characters and solves
+ *          the poisson equation using a user specified method.
 */
 
 #include <numeric>
