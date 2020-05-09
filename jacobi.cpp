@@ -99,7 +99,6 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
             }
         }
     }
-    std::cout << "layer: " << i << std::endl;
 
     return result;
 }
