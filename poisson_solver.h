@@ -36,7 +36,7 @@ class poisson_solver
         * @return   the solution matrix
         */
         virtual nTrix<float> operator() (const nTrix<char>& data,
-                                                float step) const = 0;
+                                                const float step) const = 0;
 
         /**
         * @brief    Used to print out the matrix in a comma deliminated fashion

@@ -4,7 +4,7 @@
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 5/10/20
- * @date    5/2/20
+ * @date    5/10/20
  *
  * @brief   This class solves the poisson equation using an improved method
  *          of LU decomposition know as cholesky decompostion. This takes

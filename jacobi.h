@@ -58,7 +58,7 @@ class jacobi : public poisson_solver<jacobi>
         * @param    error - the maximum absolute change between iterations that
         *                   is accepted for a found solution per cell
         */
-        jacobi(float error)
+        jacobi(const float error)
             : m_error(error)
         {
             if (error <= 0)
@@ -107,7 +107,7 @@ class jacobi : public poisson_solver<jacobi>
         *
         * @return   the solution matrix with an extra padding of 0's around it
         */
-        nTrix<float> operator()(const nTrix<char>& data, float step) const
+        nTrix<float> operator()(const nTrix<char>& data, const float step) const
                                                                        override;
 
         /********************* output functions *********************/
@@ -125,14 +125,15 @@ class jacobi : public poisson_solver<jacobi>
         * @return   if the state has been verified to have been solved with
         *           sufficient accuracy
         */
-        bool verify(const nTrix<float>& data, float step) noexcept;
+        bool verify(const nTrix<float>& data, const float step) noexcept;
 
         /**
         * @brief    Used to print out the matrix in a comma deliminated fashion
         * @pre      N/A
         * @post     modifies the passed parameter to print out the comma
         *           deliminated matrix. The print out goes to 6 significant
-        *           figures.
+        *           figures. Does not print out the first and last rows and
+        *           columns
         *
         * @param    out - the ostream that takes in the output
         * @param    data - nTrix<float> that is filled with the solution to the

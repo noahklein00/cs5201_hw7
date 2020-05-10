@@ -59,8 +59,7 @@ clean:
 	-@rm -f hw7.out
 	-@rm -f depend
 	-@rm -f $(OBJECTS)
-	-@rm -rf html
-	-@rm -rf latex
+	-@rm -rf docs
 
 # Automatically generate dependencies and include them in Makefile
 depend: $(SOURCES) $(HEADERS)

@@ -24,7 +24,7 @@ jacobi& jacobi::operator= (const jacobi& source) noexcept
     return *this;
 }
 
-nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
+nTrix<float> jacobi::operator()(const nTrix<char>& data, const float step) const
 {
     if (step < 0)
     {
@@ -124,7 +124,7 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
 }
 
 /********************* output functions *********************/
-bool jacobi::verify(const nTrix<float>& data, float step) noexcept
+bool jacobi::verify(const nTrix<float>& data, const float step) noexcept
 {
     bool resolved = true;
 
@@ -152,13 +152,13 @@ bool jacobi::verify(const nTrix<float>& data, float step) noexcept
 void jacobi::print(std::ostream& out, const nTrix<float>& data) const
                                                                         noexcept
 {
-	for(int x = 1; x < data.rows() - 1; x++)
+	for(int row = 1; row < data.rows() - 1; row++)
 	{
-		for(int y = 1; y < data.cols() - 1; y++)
+		for(int col = 1; col < data.cols() - 1; col++)
 		{
-			out << data(x, y) << ",";
+			out << data(row, col) << ",";
 		}
-		if(x < data.rows() - 2)
+		if(row < data.rows() - 1)
 		{
 			out << std::endl;
 		}
