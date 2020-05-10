@@ -4,7 +4,7 @@
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 5/10/20
- * @date    5/2/20
+ * @date    5/10/20
  *
  * @brief   This is a solution definition to the possion equation. This is an
  *          implimentaiton of the over-relax algorithm.
@@ -95,7 +95,8 @@ class jacobi : public poisson_solver<jacobi>
         * @pre      the matrix must be at least a 1x1, and the step size must be
         *           greater than 0
         * @post     returns the solution matrix with number within the error
-        *           threshold
+        *           threshold. The solution matrix has a padding of 0's around
+        *           it
         *
         * @exception    throws a invalid argument error if the matrix is too
         *               small or the step size is less than 1.
@@ -104,7 +105,7 @@ class jacobi : public poisson_solver<jacobi>
         * @param    step - the cost to move to an adjacent cell, must be greater
         *                  than zero
         *
-        * @return   the solution matrix
+        * @return   the solution matrix with an extra padding of 0's around it
         */
         nTrix<float> operator()(const nTrix<char>& data, float step) const
                                                                        override;

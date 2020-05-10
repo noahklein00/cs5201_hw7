@@ -1,10 +1,10 @@
 /**
  * @file    vector.hpp
- * @author  Jeffrey Strahm
+ * @author  Jeffrey Strahm and Noah Klein
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 5/10/2020
- * @date    5/2/2020
+ * @date    5/10/2020
  * 
 */
 

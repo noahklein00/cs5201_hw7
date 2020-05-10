@@ -1,8 +1,8 @@
-// Programmer : Noah Klein
+// Programmer : Noah Klein and Jeffrey Strahm
 // Instructor : Price
 // Class      : CS5201 Spring 2020
-// Assignment : Homework 7 - Complex Numbers, Outer Products, and Quantum
-//              Computing
+// Assignment : Homework 7 (Final Project) - Image Analysis with Poisson's
+//				Equation
 // Filename   : nTrix.hpp
 
 //***************************** Essentials **********************************//

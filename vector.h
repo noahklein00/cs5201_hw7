@@ -1,10 +1,10 @@
 /**
  * @file    vector.h
- * @author  Jeffrey Strahm
+ * @author  Jeffrey Strahm and Noah Klein
  * @brief   class: CS5201 - Prof. Price
- * @brief   Homework 7 - Complex Numbers, Outer Products, and Quantum Computing
+ * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 5/10/2020
- * @date    5/2/2020
+ * @date    5/10/2020
  *
  * @brief   This is the vector class definition. This is used to store data in
  *          an array. It can support any type as long as the type supports =,
