@@ -107,7 +107,7 @@ class jacobi : public poisson_solver<jacobi>
         *
         * @return   the solution matrix with an extra padding of 0's around it
         */
-        nTrix<float> operator()(const nTrix<char>& data, float step) const
+        nTrix<float> operator()(const nTrix<char>& data, const float step) const
                                                                        override;
 
         /********************* output functions *********************/

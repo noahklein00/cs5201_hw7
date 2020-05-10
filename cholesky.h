@@ -58,7 +58,8 @@ class cholesky: public poisson_solver<cholesky>
     * @throws   Throws a invalArgErr if the step parameter is not greater than
     *           zero or if the data parameter is not made up of only B and W.
     */
-    virtual nTrix<float> operator()(const nTrix<char>& data, float step) const override;
+    virtual nTrix<float> operator()(const nTrix<char>& data, float const step)
+      const override;
 
     /**
     * @brief    Used to print out the matrix in a comma deliminated fashion

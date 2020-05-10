@@ -24,7 +24,7 @@ jacobi& jacobi::operator= (const jacobi& source) noexcept
     return *this;
 }
 
-nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
+nTrix<float> jacobi::operator()(const nTrix<char>& data, const float step) const
 {
     if (step < 0)
     {

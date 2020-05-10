@@ -15,7 +15,8 @@ void cholesky::invalArgErr(const std::string& msg) const
     throw std::invalid_argument(msg);
 }
 
-nTrix<float> cholesky::operator()(const nTrix<char>& data, float step) const
+nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
+  const
 {
   //x and b are converted to vectors.
   //A is the matrix that holds the system of equations.
