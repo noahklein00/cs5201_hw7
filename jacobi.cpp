@@ -4,7 +4,7 @@
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 (Final Project) - Image Analysis with Poisson's Equation
  * @brief   Due: 5/10/20
- * @date    5/2/20
+ * @date    5/10/20
 */
 
 #include "jacobi.h"
@@ -50,6 +50,11 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
         invalArgErr(err);
     }
 
+    short startY = data.rows() + 1;
+    short startX = data.cols() + 1;
+    short endY = 1;
+    short endX = 1;
+
     nTrix<float> result(data.rows() + 2, data.cols() + 2);
     for (short row = 0; row < result.rows(); row++)
     {
@@ -62,6 +67,26 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
             }
             else
             {
+                if (result(row, col) != 0)
+                {
+                    if (row < startX)
+                    {
+                        startX = row - 1;
+                    }
+                    if (row > endX)
+                    {
+                        endX = row + 1;
+                    }
+                    if (col < startY)
+                    {
+                        startY = col - 1;
+                    }
+                    if (col > endY)
+                    {
+                        endY = col + 1;
+                    }
+                }
+
                 result(row, col) = data(row - 1, col - 1) == 'W'
                                     ? 0 : 1;
             }
@@ -70,16 +95,13 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, float step) const
 
     bool resolved = false;
 
-    const short rowSize = result.rows() - 1;
-    const short colSize = result.cols() - 1;
-
     while (!resolved)
     {
         resolved = true;
 
-        for (short row = 1; row < rowSize; row++)
+        for (short row = startX; row < endX; row++)
         {
-            for (short col = 1; col < colSize; col++)
+            for (short col = startY; col < endY; col++)
             {
                 if (result(row, col) != 0)
                 {

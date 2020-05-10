@@ -4,7 +4,7 @@
  * @brief   class: CS5201 - Prof. Price
  * @brief   Homework 7 - Complex Numbers, Outer Products, and Quantum Computing
  * @brief   Due: 5/10/2020
- * @date    5/3/2020
+ * @date    5/10/2020
  *
  * @brief
 */

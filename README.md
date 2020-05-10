@@ -21,7 +21,7 @@ I have included a script, `run.sh`, that should be used to actually run your pro
 such that one can run `./run.sh image.jpg image_data.csv 100 0`, in which the first argument is
 the name of the silhouette file, the second is the name of the desired output file,
 the third argument is the max matrix size as described above, and the fourth argument is the
-solution you wish to run..  Feel free to modify it as you see fit, as long as its current
+solution you wish to run. Feel free to modify it as you see fit, as long as its current
 behavior remains intact.
 
 Sample images you can use with this script are available in the `images/` directory.

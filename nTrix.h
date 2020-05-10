@@ -1,7 +1,7 @@
 /*! \file
  *
  * Definitions for the nTrix class. \n
- * Programmer: Noah Klein \n
+ * Programmer: Noah Klein and Jeffrey Strahm \n
  * Class: CS5201 \n
  * Assignment: Homework 7 \n
  */
