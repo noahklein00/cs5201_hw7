@@ -19,22 +19,22 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
   const
 {
   //x and b are converted to vectors.
-  //A is the matrix that holds the system of equations.
-  nTrix<float> A(data.rows() * data.cols(), data.rows() * data.cols());
+  //coefficient is the matrix that holds the system of equations.
+  nTrix<float> coefficient(data.rows() * data.cols(), data.rows() * data.cols());
   //solution is the matrix that holds the final matrix representation of the
   //solution vector.
   nTrix<float> solution(data.rows(), data.cols());
-  //L is the lower triangular matrix that A decomposes into through cholesky
+  //lower is the lower triangular matrix that coefficient decomposes into through cholesky
   //decomposition.
-  nTrix<float> L(A.rows(), A.cols());
-  //x is the vector representation of the solution to the system of equations.
-  vector<float> x(A.rows());
-  //y is the intermediate vector constructed while solving Ly = b and Ux = y
-  //where U = L.transpose().
-  vector<float> y(A.rows());
-  //b is the vector of known points along the boundary that gets the forcing
+  nTrix<float> lower(coefficient.rows(), coefficient.cols());
+  //final is the vector representation of the solution to the system of equations.
+  vector<float> final(coefficient.rows());
+  //intermediate is the intermediate vector constructed while solving Ly = b and Ux = y
+  //where U = lower.transpose().
+  vector<float> intermediate(coefficient.rows());
+  //known is the vector of known points along the boundary that gets the forcing
   //function added to it.
-  vector<float> b(A.rows());
+  vector<float> known(coefficient.rows());
   //temp is a variable that gets used to store temporary information when
   //solving Ly = b and Ux = y.
   float temp;
@@ -44,7 +44,7 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
   int j = 0;
   int k = 0;
   //SIZE is a constant that represents the N value of the NxN matrices used.
-  const int SIZE = L.rows();
+  const int SIZE = lower.rows();
   //COLSIZE is a constant that represents the number of columns in the original
   //input matrix passed.
   const int COLSIZE = data.cols();
@@ -56,7 +56,7 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
     invalArgErr(err);
   }
 
-  //filling the x vector with values
+  //filling the final vector with values
   for(i = data.rows()-1; i >= 0; --i)
   {
     for(j = 0; j < data.cols(); ++j)
@@ -65,12 +65,12 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
       //to 0.
       if(data(i,j) == 'W')
       {
-        x[k] = 0;
+        final[k] = 0;
       }
       //The 'B' values are set to a temporary placeholder of 1.
       else if(data(i,j) == 'B')
       {
-        x[k] = 1;
+        final[k] = 1;
       }
       else
       {
@@ -84,16 +84,16 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
   }
 
   //Since we know the border will be all 0's, and that the forcing function is
-  //a constant, we can set the entire b vector equal to that value.
+  //a constant, we can set the entire known vector equal to that value.
   for(i = 0; i < SIZE; ++i)
   {
-    b[i] = step;
+    known[i] = step;
   }
 
-  //Filling in the values of the A matrix.
-  for(i = 0; i < A.rows(); i++)
+  //Filling in the values of the coefficient matrix.
+  for(i = 0; i < coefficient.rows(); i++)
   {
-    //Since we know that A will always be banded and that the bands will be
+    //Since we know that coefficient will always be banded and that the bands will be
     //bound around the diagonal by +/- COLSIZE, we can just have j skip over
     //the columns that we already know will equal 0 and focus on the columns
     //that have dependent values.
@@ -116,54 +116,54 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
     {
       if(i == j)
       {
-        A(i,j) = 1.0;
+        coefficient(i,j) = 1.0;
       }
       else if(i == j-COLSIZE)
       {
-        A(i,j) = -.25;
+        coefficient(i,j) = -.25;
       }
       else if(i == j+COLSIZE)
       {
-        A(i,j) = -.25;
+        coefficient(i,j) = -.25;
       }
       else if((i == j-1) && (i+1)%(COLSIZE) != 0)
       {
-        A(i,j) = -.25;
+        coefficient(i,j) = -.25;
       }
       else if((i == j+1) && (i)%(COLSIZE) != 0)
       {
-        A(i,j) = -.25;
+        coefficient(i,j) = -.25;
       }
       else
       {
-        A(i,j) = 0.0;
+        coefficient(i,j) = 0.0;
       }
     }
   }
 
-  //Since we know that 'W' or 0 values in the x vector won't have their weights
-  //determined by their neighbors, we go through the A matrix and set any values
+  //Since we know that 'W' or 0 values in the final vector won't have their weights
+  //determined by their neighbors, we go through the coefficient matrix and set any values
   //that depend on a 'W' neighbor to 0.
   for(i = 0; i < SIZE; ++i)
   {
-    if(x[i] == 0)
+    if(final[i] == 0)
     {
       for(j = 0; j < SIZE; ++j)
       {
         if(i != j)
         {
-          A(i,j) = 0;
-          A(j,i) = 0;
+          coefficient(i,j) = 0;
+          coefficient(j,i) = 0;
         }
       }
     }
   }
 
-  //This loop decomposes the A matrix into a lower triangular matrix.
+  //This loop decomposes the coefficient matrix into a lower triangular matrix.
   for(i = 0; i < SIZE; ++i)
   {
     //We can use the same properties that we used in the construction of the
-    //A matrix to bound the loop through the columns to only focus on the area
+    //coefficient matrix to bound the loop through the columns to only focus on the area
     //within the band.
     if(i <= (COLSIZE + 1))
     {
@@ -187,35 +187,35 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
       }
 
       //Based off of the formula for cholesky decomposition, for any points on
-      //the diagonal  L(i,i) = the square root of A(i,i) minus the sum of all
-      //the points on that row from the L matrix.
+      //the diagonal  lower(i,i) = the square root of coefficient(i,i) minus the sum of all
+      //the points on that row from the lower matrix.
       if(i == j)
       {
         for(; k < j; ++k)
         {
-          temp += std::pow(L(i,k),2);
+          temp += std::pow(lower(i,k),2);
         }
-        L(i,j) = std::sqrt(A(j,j) - temp);
+        lower(i,j) = std::sqrt(coefficient(j,j) - temp);
       }
-      //For any point not on the diagonal, L(i,j) = 1/L(j,j) times A(i,j) minus
-      //the sum of all the products of L(i,k) * L(j,k).
+      //For any point not on the diagonal, lower(i,j) = 1/lower(j,j) times coefficient(i,j) minus
+      //the sum of all the products of lower(i,k) * lower(j,k).
       else
       {
         for(; k < j; ++k)
         {
-          temp += (L(i,k) * L(j,k));
+          temp += (lower(i,k) * lower(j,k));
         }
-        L(i,j) = (1.0/L(j,j)) * (A(i,j) - temp);
+        lower(i,j) = (1.0/lower(j,j)) * (coefficient(i,j) - temp);
       }
       temp = 0;
     }
   }
 
-  //Solving the y vector for Ly = b using forward substitution.
+  //Solving the intermediate vector for Ly = b using forward substitution.
   for(i = 0; i < SIZE; ++i)
   {
     //similar bound check.
-    if(x[i] != 0)
+    if(final[i] != 0)
     {
       if(i <= COLSIZE)
       {
@@ -227,18 +227,18 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
       }
       for(; j < i; ++j)
       {
-        temp += L(i,j) * y[j];
+        temp += lower(i,j) * intermediate[j];
       }
-      y[i] = (b[i] - temp)/L(i,i);
+      intermediate[i] = (known[i] - temp)/lower(i,i);
       temp = 0;
     }
   }
 
-  //solving the x vector for (U)x = y using backward substitution with U =
-  //L.transpose().
+  //solving the final vector for (U)final = intermediate using backward substitution with U =
+  //lower.transpose().
   for(i = SIZE-1; i >= 0; --i)
   {
-    if(x[i] != 0)
+    if(final[i] != 0)
     {
       if(i >= SIZE - COLSIZE - 1)
       {
@@ -250,9 +250,9 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
       }
       for(; j > i; --j)
       {
-        temp += L(j,i) * x[j];
+        temp += lower(j,i) * final[j];
       }
-      x[i] = (y[i] - temp)/L(i,i);
+      final[i] = (intermediate[i] - temp)/lower(i,i);
       temp = 0;
     }
   }
@@ -266,7 +266,7 @@ nTrix<float> cholesky::operator()(const nTrix<char>& data, const float step)
   {
     for(j = 0; j < solution.cols(); ++j)
     {
-      solution(i,j) = x[k];
+      solution(i,j) = final[k];
       ++k;
     }
   }
