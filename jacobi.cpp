@@ -28,7 +28,7 @@ nTrix<float> jacobi::operator()(const nTrix<char>& data, const float step) const
 {
     if (step < 0)
     {
-        const std::string err = "Step size must be greater than 1. "
+        const std::string err = "Step size must be greater than 0. "
                                 "Passed step size: " +
                                 std::to_string(step);
         invalArgErr(err);
