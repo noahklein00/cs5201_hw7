@@ -1,0 +1,61 @@
+Testing penguin.jpg with size 100:
+Score is 88.34
+Testing penguin.jpg with size 500:
+Score is 100.00
+Testing penguin.jpg with size 1000:
+Score is 96.25
+Testing penguin.jpg with size 2500:
+Score is 99.62
+Testing penguin.jpg with size 5000:
+Score is 99.54
+Testing penguin.jpg with size 10000:
+Score is 99.34
+Testing penguin.jpg with size 20000:
+Score is 99.79
+Testing penguin.jpg with size 50000:
+Score is 99.76
+Testing penguin.jpg with size 100000:
+Score is 99.88
+Testing sparrow.jpg with size 100:
+Score is 100.00
+Testing sparrow.jpg with size 500:
+Score is 100.00
+Testing sparrow.jpg with size 1000:
+Score is 97.53
+Testing sparrow.jpg with size 2500:
+Score is 100.00
+Testing sparrow.jpg with size 5000:
+Score is 99.22
+Testing sparrow.jpg with size 10000:
+Score is 100.00
+Testing sparrow.jpg with size 20000:
+Score is 99.97
+Testing sparrow.jpg with size 50000:
+Score is 99.87
+Testing sparrow.jpg with size 100000:
+Score is 100.00
+Testing squirrel.jpg with size 100:
+Score is 100.00
+Testing squirrel.jpg with size 500:
+Score is 91.15
+Testing squirrel.jpg with size 1000:
+Score is 95.40
+Testing squirrel.jpg with size 2500:
+Score is 96.18
+Testing squirrel.jpg with size 5000:
+Score is 99.88
+Testing squirrel.jpg with size 10000:
+Score is 97.35
+Testing squirrel.jpg with size 20000:
+Score is 100.00
+Testing squirrel.jpg with size 50000:
+Score is 100.00
+Testing squirrel.jpg with size 100000:
+Score is 99.94
+Time complexity is roughly O(n^2), or t(n) = 3.752e-09n^2 + 1.042e+00
+Overall correctness score is: 98.48
+Total wall clock time elapsed is: 174.83 seconds
+
+
+Your final score is:
+140.99
